@@ -13,7 +13,7 @@ TODO (Unorderred):
 * Error handling for connection failure and other exceptions
 * Implement progress bar during search
 * Handle not found result
-* Use version control
+* [DONE] Use version control
 * Host code on Github
 
 ## V0.2
