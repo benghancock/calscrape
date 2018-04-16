@@ -8,8 +8,10 @@ import re, requests, json
 
 # Get search term
 key = input("Search term: ")
+filename = 'ndcal_cals.json'
 
-filename = 'calendars.json'
+# Set a variable for number of matches
+matches = 0
 
 with open (filename) as f:
     calendars = json.load(f)
@@ -30,9 +32,6 @@ for calendar in calendars:
     # Test key and create regex search key
     searchkey = r'\b' + key + r'\b'
 
-    # Set a variable for number of matches
-    matches = 0
-
     # Loop through the contents searching for the calendar
     for entry in content:
         match = re.search(searchkey, entry, re.IGNORECASE) 
@@ -48,9 +47,10 @@ for calendar in calendars:
         # Print the results, neatly formatted
         print(str(matches) + ' matches found for ' + key + ' in the following courtroom:')
         print(judge.group(2)) 
+        matches = 0 # Reset match counter to 0
 
     else:
-        
+
         continue
 
 if matches == 0:
