@@ -10,9 +10,12 @@ try:
     court = input("Court: ")
     filename = court.lower() + ".json"
 
+    with open (filename) as f:
+        calendars = json.load(f)
+
 except FileNotFoundError:
     print("Court file for " + court + " not found.")
-    
+
 # Get search term
 key = input("Search term: ")
 
@@ -20,9 +23,8 @@ key = input("Search term: ")
 matches = 0
 total_matches = 0
 
-with open (filename) as f:
-    calendars = json.load(f)
 
+print("\n=== Results for term \"" + key + "\" on calendars ===")
 # Loop through all calendars
 for judge, cal_url in calendars.items():
 
@@ -50,8 +52,7 @@ for judge, cal_url in calendars.items():
     if matches > 0:
         
         # Print the results, neatly formatted
-        print(str(matches) + ' matches found for ' + key + ' on calendar for Judge ' + judge.upper())
-        
+        print("Judge " + judge.upper() + ": " + str(matches) + " matches.")       
         # Reset match counter to 0
         matches = 0 
 
