@@ -10,6 +10,9 @@ TODO (Unorderred):
 * [DONE] Implement search for keywords using 'for' loops and regex
 * Build .json files with addresses and keywords to search
     * [DONE] Rebuild loop structures to handle searching of each site, keyword
+    * Change format of file to *dictionary*
+    * Create keyword JSON file (list)
+    * Create case # JSON file (list)
 * Error handling for connection failure and other exceptions
 * Implement progress bar during search
 * [DONE] Handle not found result
