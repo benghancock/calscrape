@@ -10,7 +10,7 @@ TODO (Unorderred):
 * [DONE] Implement search for keywords using 'for' loops and regex
 * Build .json files with addresses and keywords to search
     * [DONE] Rebuild loop structures to handle searching of each site, keyword
-    * Change format of file to *dictionary*
+    * [DONE] Change format of file to *dictionary*
     * Create keyword JSON file (list)
     * Create case # JSON file (list)
 * Error handling for connection failure and other exceptions
@@ -18,6 +18,9 @@ TODO (Unorderred):
 * [DONE] Handle not found result
 * [DONE] Use version control
 * [DONE] Host code on Github
+* Handle case-name search
+* Handle list-based keyword search
+* Set up in virtualenv to address possible dependencies
 
 ## V0.2
 SPEC: Searches for keywords and/or case numbers, serves up to user NAME of
