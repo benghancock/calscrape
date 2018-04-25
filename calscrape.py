@@ -4,17 +4,17 @@
 
 # Import necessary modules
 from lxml import html
-import re, requests, json
+import re, requests, json, sys
+
+filename = 'ndcal.json'
 
 try:
-    court = input("Court: ")
-    filename = court.lower() + ".json"
-
     with open (filename) as f:
         calendars = json.load(f)
 
 except FileNotFoundError:
-    print("Court file for " + court + " not found.")
+    print("Court calendar file not found.")
+    sys.exit(1)
 
 # Get search term
 key = input("Search term: ")
