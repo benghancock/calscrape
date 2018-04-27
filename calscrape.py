@@ -6,61 +6,79 @@
 from lxml import html
 import re, requests, json, sys
 
-filename = 'ndcal.json'
+# Open the local calendar file // NDCAL ONLY SO FAR
+calfile = 'ndcal_test.json'
 
 try:
-    with open (filename) as f:
+    with open (calfile) as f:
         calendars = json.load(f)
 
 except FileNotFoundError:
     print("Court calendar file not found.")
     sys.exit(1)
 
-# Get search term
-key = input("Search term: ")
+# Open search terms file 
+keyfile = 'searchterms.json'
+
+try:
+    with open(keyfile) as g:
+        searchkeys = json.load(g)
+
+except FileNotFoundError:
+    print("Keyword search file not found.")
+    sys.exit(1)
+
 
 # Set a variable for number of matches
 matches = 0
 total_matches = 0
 
-
-print("\n=== Results for term \"" + key + "\" on calendars ===")
+print("\n=== Keyword search results ===\n") 
 # Loop through all calendars
 for judge, cal_url in calendars.items():
 
-    # Get the webpage and build the html 'tree'
-    cal = requests.get(cal_url)
-    tree = html.fromstring(cal.content)
+## Check for good connection
+    try:
+        cal = requests.get(cal_url)
+    
+    except requests.exceptions.RequestException as e:
+        print("Connection problem: " + e)
+        sys.exit(1)
 
-    # Build a list with all the entries on the website
+    print("Results for Judge " + judge.upper() + ":")
+    
+    tree = html.fromstring(cal.content)
     content = tree.xpath('//td/text()')
 
-   # Test key and create regex search key
-    searchkey = r'\b' + key + r'\b'
+    # Build a list with all the entries on the website
 
-    # Loop through the contents searching for the calendar
-    for entry in content:
-        match = re.search(searchkey, entry, re.IGNORECASE) 
+    for keyword in searchkeys:
         
-        if match:
-            matches += 1
-            total_matches += 1            
+        current_key = r'\b' + keyword + r'\b' 
+
+        # Loop through the contents searching for the calendar
+        for entry in content:
+            match = re.search(current_key, entry, re.IGNORECASE)
+            
+            if match:
+                matches += 1
+                total_matches += 1            
+
+            else:
+                continue
+
+        if matches > 0:
+            
+            # Print the results, neatly formatted
+            print(str(matches) + " matches for \"" + keyword + "\"")
+            # Reset match counter to 0
+            matches = 0 
 
         else:
+
             continue
 
-    if matches > 0:
-        
-        # Print the results, neatly formatted
-        print("Judge " + judge.upper() + ": " + str(matches) + " matches.")       
-        # Reset match counter to 0
-        matches = 0 
-
-    else:
-
-        continue
-
-print("Search complete")
+print("\n=== Search complete ===")
 
 if total_matches == 0:
 
