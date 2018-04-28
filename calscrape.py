@@ -7,7 +7,7 @@ from lxml import html
 import re, requests, json, sys
 
 # Open the local calendar file // NDCAL ONLY SO FAR
-calfile = 'ndcal_test.json'
+calfile = 'ndcal.json'
 
 try:
     with open (calfile) as f:
@@ -31,6 +31,7 @@ except FileNotFoundError:
 
 # Set a variable for number of matches
 matches = 0
+judge_matches = 0
 total_matches = 0
 
 print("\n=== Keyword search results ===\n") 
@@ -45,7 +46,7 @@ for judge, cal_url in calendars.items():
         print("Connection problem: " + e)
         sys.exit(1)
 
-    print("Results for Judge " + judge.upper() + ":")
+    print("\n\t>>> Judge " + judge.upper() + ":")
     
     tree = html.fromstring(cal.content)
     content = tree.xpath('//td/text()')
@@ -62,7 +63,11 @@ for judge, cal_url in calendars.items():
             
             if match:
                 matches += 1
+                judge_matches += 1
                 total_matches += 1            
+                print(entry)
+                hearing_index = content.index(entry) + 1
+                print(content[hearing_index])
 
             else:
                 continue
@@ -70,13 +75,19 @@ for judge, cal_url in calendars.items():
         if matches > 0:
             
             # Print the results, neatly formatted
-            print(str(matches) + " matches for \"" + keyword + "\"")
+            print(str(matches) + " matches for \"" + keyword + "\"\n")
             # Reset match counter to 0
             matches = 0 
 
         else:
-
             continue
+    
+    if judge_matches == 0:
+        print("None")
+
+    else:
+        judge_matches = 0
+        continue
 
 print("\n=== Search complete ===")
 
