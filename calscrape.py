@@ -30,7 +30,7 @@ except FileNotFoundError:
 
 
 # Set a variable for number of matches
-matches = 0
+word_matches = 0
 judge_matches = 0
 total_matches = 0
 
@@ -41,9 +41,11 @@ for judge, cal_url in calendars.items():
 ## Check for good connection
     try:
         cal = requests.get(cal_url)
-    
+         
     except requests.exceptions.RequestException as e:
-        print("Connection problem: " + e)
+        print("*** Connection problem. Please check internet connection ***")
+        print("\nReceived following error: ")
+        print(e)
         sys.exit(1)
 
     print("\n\t>>> Judge " + judge.upper() + ":")
@@ -62,7 +64,7 @@ for judge, cal_url in calendars.items():
             match = re.search(current_key, entry, re.IGNORECASE)
             
             if match:
-                matches += 1
+                word_matches += 1
                 judge_matches += 1
                 total_matches += 1            
                 print(entry)
@@ -72,12 +74,12 @@ for judge, cal_url in calendars.items():
             else:
                 continue
 
-        if matches > 0:
+        if word_matches > 0:
             
             # Print the results, neatly formatted
-            print(str(matches) + " matches for \"" + keyword + "\"\n")
+            print(str(word_matches) + " matches for \"" + keyword + "\"\n")
             # Reset match counter to 0
-            matches = 0 
+            word_matches = 0 
 
         else:
             continue
