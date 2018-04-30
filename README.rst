@@ -6,8 +6,7 @@
     established procedures are being followed and that deviations will become
     known."
 
--- `Press-Enterprise Co. v. Superior Court (1986)
-<https://www.law.cornell.edu/supremecourt/text/478/1>`_
+    -- `Press-Enterprise Co. v. Superior Court (1986) <https://www.law.cornell.edu/supremecourt/text/478/1>`_
     
 **CalScrape** is a tool for rapidly searching public federal judicial calendars
 for cases of interests. It is primarily geared toward journalists but would also
@@ -18,7 +17,8 @@ As of writing, CalScrape currently only supports calendars for the U.S. District
 Court for the Northern District of California (NDCAL). Ultimately the goal is to
 extend this to other federal court calendars in California and other states.
 
-Installation ------------
+Installation 
+------------
 
 CalScrape requires your machine to be running Python 3.6 or later. It also has
 several dependencies. Follow the instructions below to install and run CalScrape
@@ -50,7 +50,8 @@ If you do not currently have Git installed on your computer, MacOS will prompt
 you to install it. This project is currently set to private so you may need to
 speak with me to get access.
 
-Running CalScrape -----------------
+Running CalScrape 
+-----------------
 
 Once in the file directory, CalScrape can be run via this terminal command:
 
@@ -67,5 +68,3 @@ Support
 
 If you want to contribute to this project, experience problems or have other
 questions, please email me at bghancock@gmail.com
-
-  
