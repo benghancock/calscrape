@@ -6,7 +6,8 @@
     established procedures are being followed and that deviations will become
     known."
 
--- `Press-Enterprise Co. v. Superior Court (1986) <https://www.law.cornell.edu/supremecourt/text/478/1>`_
+-- `Press-Enterprise Co. v. Superior Court (1986)
+<https://www.law.cornell.edu/supremecourt/text/478/1>`_
     
 **CalScrape** is a tool for rapidly searching public federal judicial calendars
 for cases of interests. It is primarily geared toward journalists but would also
@@ -17,8 +18,7 @@ As of writing, CalScrape currently only supports calendars for the U.S. District
 Court for the Northern District of California (NDCAL). Ultimately the goal is to
 extend this to other federal court calendars in California and other states.
 
-Installation
-------------
+Installation ------------
 
 CalScrape requires your machine to be running Python 3.6 or later. It also has
 several dependencies. Follow the instructions below to install and run CalScrape
@@ -29,38 +29,38 @@ available).
 * `Download <https://www.python.org/downloads/>`_ the latest version of Python.
 * Open a Terminal window and install the Requests library with the command:
 
-.. code:: bash
-    `host$ pip3 install requests`
+:: 
+    `$ pip3 install requests`
 
 * Then install the LXML library using the following command:
 
-.. code:: bash
-    `host$ pip3 install lxml`
+:: 
+    `$ pip3 install lxml`
 
 You can install CalScrape by then entering the following commands:
 
-.. code:: bash
-    `host$ git clone https://github.com/elwha1/calscrape.git`
-    `host$ cd calscrape`
+:: 
+
+    `$ git clone https://github.com/elwha1/calscrape.git` 
+    `$ cd calscrape`
 
 If you do not currently have Git installed on your computer, MacOS will prompt
 you to install it. This project is currently set to private so you may need to
 speak with me to get access.
 
-Running CalScrape
------------------
+Running CalScrape -----------------
 
 Once in the file directory, CalScrape can be run via this terminal command:
 
-.. code:: bash
-    `host$ python3 calscrape.py`
+::
+
+    `$ python3 calscrape.py`
 
 The keyword search terms and cases of interest are configured in the
-`searchterms.json` and `cases.json` files in the directory. Tools are coming to
+``searchterms.json`` and ``cases.json`` files in the directory. Tools are coming to
 allow lay users to configure these files.
 
-Support
--------
+Support -------
 
 If you want to contribute to this project, experience problems or have other
 questions, please email me at bghancock@gmail.com
