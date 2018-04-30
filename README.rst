@@ -6,8 +6,7 @@
     established procedures are being followed and that deviations will become
     known."
 
-    -- `*Press-Enterprise Co. v. Superior Court (1986)*
-    <https://www.law.cornell.edu/supremecourt/text/478/1>`_`
+-- `Press-Enterprise Co. v. Superior Court (1986) <https://www.law.cornell.edu/supremecourt/text/478/1>`_
     
 **CalScrape** is a tool for rapidly searching public federal judicial calendars
 for cases of interests. It is primarily geared toward journalists but would also
@@ -27,7 +26,7 @@ several dependencies. Follow the instructions below to install and run CalScrape
 available).
 
 
-* `Download<https://www.python.org/downloads/>`_ the latest version of Python.
+* `Download <https://www.python.org/downloads/>`_ the latest version of Python.
 * Open a Terminal window and install the Requests library with the command:
 
 .. code:: bash
