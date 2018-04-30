@@ -50,10 +50,9 @@ for judge, cal_url in calendars.items():
 
     print("\n\t>>> Judge " + judge.upper() + ":")
     
+    # Build a list with all the entries on the website
     tree = html.fromstring(cal.content)
     content = tree.xpath('//td/text()')
-
-    # Build a list with all the entries on the website
 
     for keyword in searchkeys:
         
