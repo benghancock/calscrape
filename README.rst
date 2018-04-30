@@ -30,19 +30,21 @@ available).
 * Open a Terminal window and install the Requests library with the command:
 
 :: 
-    `$ pip3 install requests`
+    
+    $ pip3 install requests
 
 * Then install the LXML library using the following command:
 
 :: 
-    `$ pip3 install lxml`
+    
+    $ pip3 install lxml
 
 You can install CalScrape by then entering the following commands:
 
 :: 
 
-    `$ git clone https://github.com/elwha1/calscrape.git` 
-    `$ cd calscrape`
+    $ git clone https://github.com/elwha1/calscrape.git 
+    $ cd calscrape
 
 If you do not currently have Git installed on your computer, MacOS will prompt
 you to install it. This project is currently set to private so you may need to
@@ -54,13 +56,14 @@ Once in the file directory, CalScrape can be run via this terminal command:
 
 ::
 
-    `$ python3 calscrape.py`
+    $ python3 calscrape.py
 
 The keyword search terms and cases of interest are configured in the
 ``searchterms.json`` and ``cases.json`` files in the directory. Tools are coming to
 allow lay users to configure these files.
 
-Support -------
+Support 
+-------
 
 If you want to contribute to this project, experience problems or have other
 questions, please email me at bghancock@gmail.com
