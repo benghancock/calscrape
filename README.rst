@@ -61,9 +61,9 @@ Once in the file directory, CalScrape can be run via this terminal command:
 
     $ python3 calscrape.py
 
-The keyword search terms and cases of interest are configured in the
-``searchterms.json`` and ``cases.json`` files in the directory. Tools are coming to
-allow lay users to configure these files.
+The keyword search terms are configured in the ``searchterms.json`` file in the
+directory. Tools are coming to allow users to configure this file and search by
+case number.
 
 Support 
 -------
