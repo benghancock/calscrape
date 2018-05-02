@@ -6,7 +6,8 @@
     established procedures are being followed and that deviations will become
     known."
 
-    -- `Press-Enterprise Co. v. Superior Court (1986) <https://www.law.cornell.edu/supremecourt/text/478/1>`_
+    -- `Press-Enterprise Co. v. Superior Court (1986)
+    <https://www.law.cornell.edu/supremecourt/text/478/1>`_
     
 **CalScrape** is a tool for rapidly searching public federal judicial calendars
 for cases of interests. It is primarily geared toward journalists but would also
@@ -20,9 +21,9 @@ extend this to other federal court calendars in California and other states.
 Installation 
 ------------
 
-CalScrape requires your machine to be running Python 3.6 or later. It also has
-several dependencies. Follow the instructions below to install and run CalScrape
-(these should cover MacOS and most Linux distros; Windows instructions not yet
+CalScrape requires your machine to be running Python 3x. It also has several
+dependencies. Follow the instructions below to install and run CalScrape (these
+should cover MacOS and most Linux distros; Windows instructions not yet
 available).
 
 
@@ -31,13 +32,13 @@ available).
 
 :: 
     
-    $ pip3 install requests
+    $ pip install requests
 
 * Then install the LXML library using the following command:
 
 :: 
     
-    $ pip3 install lxml
+    $ pip install lxml
 
 You can install CalScrape by then entering the following commands:
 
@@ -48,7 +49,8 @@ You can install CalScrape by then entering the following commands:
 
 If you do not currently have Git installed on your computer, MacOS will prompt
 you to install it. This project is currently set to private so you may need to
-speak with me to get access.
+speak with me to get access. (Note: You may need to install ``pip`` or
+``pip3``.)
 
 Running CalScrape 
 -----------------
