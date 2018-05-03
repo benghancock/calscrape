@@ -1,6 +1,4 @@
 #! /usr/bin/env python3
-# Python web scraping project for federal judicial calendars 
-# Ben Hancock. v0.1: in development / no license
 
 # Import necessary modules
 from lxml import html
@@ -57,15 +55,23 @@ for judge, cal_url in calendars.items():
     for keyword in searchkeys:
         
         current_key = r'\b' + keyword + r'\b' 
+        dateformat = r'\b\w.+\d+.201\d\b'
 
         # Loop through the contents searching for the calendar
         for entry in content:
+            
+            date = re.search(dateformat, entry)           
             match = re.search(current_key, entry, re.IGNORECASE)
+
+            if date:
+
+                currentdate = date
             
             if match:
                 word_matches += 1
                 judge_matches += 1
                 total_matches += 1            
+                print(currentdate.group())
                 print(entry)
                 hearing_index = content.index(entry) + 1
                 print(content[hearing_index])
