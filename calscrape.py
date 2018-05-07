@@ -40,7 +40,9 @@ word_matches = 0
 judge_matches = 0
 total_matches = 0
 
-print("\n=== Search Results ===\n") 
+case_matches = 0
+
+print("\n=== Keyword Search Results ===\n") 
 
 # Loop through all calendars
 for judge, cal_url in calendars.items():
@@ -102,29 +104,33 @@ for judge, cal_url in calendars.items():
         judge_matches = 0
         continue
 
-   
     # Search for cases of interest
     for casejudge, casenums in cases.items():
 
-        if casejudge = judge:
+        if casejudge == judge:
             
             for casenum in casenums:
+                # TODO: Search algorithm and/or re search not working. Tweak
                 searchcase = r'\b' + casenum + "-" + casejudge + r'\b'
                 
                 for entry in content:
-                    match = re.search(searchcase, entry, re.IGNORECASE)
-                    date = re.search(dateformat, entry)
+                    casematch = re.search(searchcase, entry, re.IGNORECASE)
+                    casedate = re.search(dateformat, entry)
                                
-                    if date:
-                        currentdate = date
+                    if casedate:
+                        currentcasedate = casedate
 
-                    elif match:
-                        #TODO Define vars for counting; print case info
-
+                    elif casematch:
+                        print("FOLLOWED CASE: " + entry)
+                        
                     else:
+                        print("NO FOLLOWED CASES")
                         continue
 
-   print("\n=== Search Complete ===")
+        else:
+            continue
+
+print("\n=== Search Complete ===")
 
 if total_matches == 0:
 
