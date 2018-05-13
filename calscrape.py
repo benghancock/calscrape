@@ -9,6 +9,7 @@ calfile = 'ndcal_test.json'
 keyfile = 'searchterms.json'
 casefile = 'cases.json'
 
+
 try:
     with open (calfile) as f:
         calendars = json.load(f)
@@ -102,16 +103,17 @@ for judge, cal_url in calendars.items():
 
     else:
         judge_matches = 0
-        continue
 
     # Search for cases of interest
     for casejudge, casenums in cases.items():
-
+        
         if casejudge == judge:
-            
+
+            print("i AM the case judge")
+        
             for casenum in casenums:
                 # TODO: Search algorithm and/or re search not working. Tweak
-                searchcase = r'\b' + casenum + "-" + casejudge + r'\b'
+                searchcase = r'\b' + casenum + r'-\w+\b'
                 
                 for entry in content:
                     casematch = re.search(searchcase, entry, re.IGNORECASE)
@@ -122,12 +124,13 @@ for judge, cal_url in calendars.items():
 
                     elif casematch:
                         print("FOLLOWED CASE: " + entry)
-                        
+                        continue
+
                     else:
-                        print("NO FOLLOWED CASES")
                         continue
 
         else:
+            print("not case judge")
             continue
 
 print("\n=== Search Complete ===")
