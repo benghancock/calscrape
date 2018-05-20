@@ -36,12 +36,16 @@ except FileNotFoundError:
 
 ####################################
 
-# Set a variable for number of matches
+# Set keyword matches counters 
 word_matches = 0
 judge_matches = 0
 total_matches = 0
 
+# Set case matches counter
 case_matches = 0
+
+# Formula for dates while searching
+dateformat = r'\b\w.+\d+.201\d\b'
 
 print("\n=== Keyword Search Results ===\n") 
 
@@ -67,12 +71,12 @@ for judge, cal_url in calendars.items():
     # Search the list for desired keywords
     for keyword in searchkeys:
         current_key = r'\b' + keyword + r'\b' 
-        dateformat = r'\b\w.+\d+.201\d\b'
 
         for entry in content:
             date = re.search(dateformat, entry)           
             match = re.search(current_key, entry, re.IGNORECASE)
 
+            # Grab the dates while scanning; only print if keyword mathc
             if date:
                 currentdate = date
             
@@ -82,6 +86,8 @@ for judge, cal_url in calendars.items():
                 total_matches += 1            
                 print(currentdate.group())
                 print(entry)
+                
+                # Get hearing information in next entry and print
                 hearing_index = content.index(entry) + 1
                 print(content[hearing_index])
 
@@ -107,30 +113,32 @@ for judge, cal_url in calendars.items():
     # Search for cases of interest
     for casejudge, casenums in cases.items():
         
+        # Only search calendar if the case is front of this judge
         if casejudge == judge:
-
-            print("i AM the case judge")
         
             for casenum in casenums:
-                # TODO: Search algorithm and/or re search not working. Tweak
                 searchcase = r'\b' + casenum + r'-\w+\b'
-                
+
                 for entry in content:
-                    casematch = re.search(searchcase, entry, re.IGNORECASE)
                     casedate = re.search(dateformat, entry)
+                    casematch = re.search(searchcase, entry, re.IGNORECASE)
                                
+                    # Grab hearing dates while scanning; print only if match
                     if casedate:
                         currentcasedate = casedate
 
                     elif casematch:
+                        print(currentcasedate.group())
                         print("FOLLOWED CASE: " + entry)
-                        continue
+
+                        # Get hearing information in next entry and print
+                        caseindex = content.index(entry) + 1
+                        print(content[caseindex])
 
                     else:
                         continue
 
         else:
-            print("not case judge")
             continue
 
 print("\n=== Search Complete ===")
