@@ -4,8 +4,11 @@
 from lxml import html
 import re, requests, json, sys
 
-# Open the local calendar file // NDCAL ONLY SO FAR
-calfile = 'ndcal.json'
+# Open the necessary calendar, search terms and cases files
+calfile = 'ndcal_test.json'
+keyfile = 'searchterms.json'
+casefile = 'cases.json'
+
 
 try:
     with open (calfile) as f:
@@ -15,24 +18,37 @@ except FileNotFoundError:
     print("Court calendar file not found.")
     sys.exit(1)
 
-# Open search terms file 
-keyfile = 'searchterms.json'
-
 try:
     with open(keyfile) as g:
         searchkeys = json.load(g)
 
 except FileNotFoundError:
-    print("Keyword search file not found.")
+    print("Keyword case file not found.")
     sys.exit(1)
 
+try:
+    with open(casefile) as h:
+        cases = json.load(h)
 
-# Set a variable for number of matches
+except FileNotFoundError:
+    print("Cases file not found.")
+    sys.exit(1)
+
+####################################
+
+# Set keyword matches counters 
 word_matches = 0
 judge_matches = 0
 total_matches = 0
 
-print("\n=== Keyword search results ===\n") 
+# Set case matches counter
+case_matches = 0
+
+# Formula for dates while searching
+dateformat = r'\b\w.+\d+.201\d\b'
+
+print("\n=== Keyword Search Results ===\n") 
+
 # Loop through all calendars
 for judge, cal_url in calendars.items():
 
@@ -48,31 +64,30 @@ for judge, cal_url in calendars.items():
 
     print("\n\t>>> Judge " + judge.upper() + ":")
     
-    # Build a list with all the entries on the website
+    # Build a list with all the entries on the calendar 
     tree = html.fromstring(cal.content)
     content = tree.xpath('//td/text()')
 
+    # Search the list for desired keywords
     for keyword in searchkeys:
-        
         current_key = r'\b' + keyword + r'\b' 
-        dateformat = r'\b\w.+\d+.201\d\b'
 
-        # Loop through the contents searching for the calendar
         for entry in content:
-            
             date = re.search(dateformat, entry)           
             match = re.search(current_key, entry, re.IGNORECASE)
 
+            # Grab the dates while scanning; only print if keyword mathc
             if date:
-
                 currentdate = date
             
-            if match:
+            elif match:
                 word_matches += 1
                 judge_matches += 1
                 total_matches += 1            
                 print(currentdate.group())
                 print(entry)
+                
+                # Get hearing information in next entry and print
                 hearing_index = content.index(entry) + 1
                 print(content[hearing_index])
 
@@ -88,15 +103,45 @@ for judge, cal_url in calendars.items():
 
         else:
             continue
-    
+  
     if judge_matches == 0:
         print("None")
 
     else:
         judge_matches = 0
-        continue
 
-print("\n=== Search complete ===")
+    # Search for cases of interest
+    for casejudge, casenums in cases.items():
+        
+        # Only search calendar if the case is front of this judge
+        if casejudge == judge:
+        
+            for casenum in casenums:
+                searchcase = r'\b' + casenum + r'-\w+\b'
+
+                for entry in content:
+                    casedate = re.search(dateformat, entry)
+                    casematch = re.search(searchcase, entry, re.IGNORECASE)
+                               
+                    # Grab hearing dates while scanning; print only if match
+                    if casedate:
+                        currentcasedate = casedate
+
+                    elif casematch:
+                        print(currentcasedate.group())
+                        print("FOLLOWED CASE: " + entry)
+
+                        # Get hearing information in next entry and print
+                        caseindex = content.index(entry) + 1
+                        print(content[caseindex])
+
+                    else:
+                        continue
+
+        else:
+            continue
+
+print("\n=== Search Complete ===")
 
 if total_matches == 0:
 
