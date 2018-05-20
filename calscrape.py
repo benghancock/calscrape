@@ -5,7 +5,7 @@ from lxml import html
 import re, requests, json, sys
 
 # Open the necessary calendar, search terms and cases files
-calfile = 'ndcal_test.json'
+calfile = 'ndcal.json'
 keyfile = 'searchterms.json'
 casefile = 'cases.json'
 
