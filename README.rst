@@ -11,8 +11,8 @@
     
 **CalScrape** is a tool for rapidly searching public federal judicial calendars
 for cases of interests. It is primarily geared toward journalists but would also
-be useful to researchers and generally interested members of the public. It
-provides an alternative (and free) way to following cases aside from PACER.
+    be useful to researchers and generally interested members of the public. It
+    provides an alternative (and free) way to following cases aside from PACER.
 
 As of writing, CalScrape currently only supports calendars for the U.S. District
 Court for the Northern District of California (NDCAL). Ultimately the goal is to
@@ -44,8 +44,7 @@ You can install CalScrape by then entering the following commands:
 
 :: 
 
-    $ git clone https://github.com/elwha1/calscrape.git 
-    $ cd calscrape
+    $ git clone https://github.com/elwha1/calscrape.git $ cd calscrape
 
 If you do not currently have Git installed on your computer, MacOS will prompt
 you to install it. This project is currently set to private so you may need to
@@ -62,8 +61,8 @@ Once in the file directory, CalScrape can be run via this terminal command:
     $ python3 calscrape.py
 
 The keyword search terms and cases of interest are configured in the
-``searchterms.json`` and ``cases.json`` files in the directory. Tools are coming to
-allow lay users to configure these files.
+``searchterms.json`` and ``cases.json`` files in the directory. Tools are
+coming to allow users to configure this file and search by case number.
 
 Support 
 -------
