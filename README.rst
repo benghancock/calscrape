@@ -44,7 +44,8 @@ You can install CalScrape by then entering the following commands:
 
 :: 
 
-    $ git clone https://github.com/elwha1/calscrape.git $ cd calscrape
+    $ git clone https://github.com/elwha1/calscrape.git 
+    $ cd calscrape
 
 If you do not currently have Git installed on your computer, MacOS will prompt
 you to install it. This project is currently set to private so you may need to
