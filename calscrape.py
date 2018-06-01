@@ -34,20 +34,19 @@ except FileNotFoundError:
     print("Cases file not found.")
     sys.exit(1)
 
-####################################
-
 # Set keyword matches counters 
 word_matches = 0
 judge_matches = 0
 total_matches = 0
 
-# Set case matches counter
+# Set case matches counter and default flag for cases
 case_matches = 0
+followed_cases = False
 
 # Formula for dates while searching
 dateformat = r'\b\w.+\d+.201\d\b'
 
-print("\n=== Keyword Search Results ===\n") 
+print("\n=== Search Results ===\n") 
 
 # Loop through all calendars
 for judge, cal_url in calendars.items():
@@ -105,7 +104,7 @@ for judge, cal_url in calendars.items():
             continue
   
     if judge_matches == 0:
-        print("None")
+        print("No keyword search matches")
 
     else:
         judge_matches = 0
@@ -116,6 +115,9 @@ for judge, cal_url in calendars.items():
         # Only search calendar if the case is front of this judge
         if casejudge == judge:
         
+            # Set a flag indicating casenums followed on judge's calendar
+            followed_cases = True
+
             for casenum in casenums:
                 searchcase = r'\b' + casenum + r'-\w+\b'
 
@@ -128,6 +130,7 @@ for judge, cal_url in calendars.items():
                         currentcasedate = casedate
 
                     elif casematch:
+                        case_matches += 1
                         print(currentcasedate.group())
                         print("FOLLOWED CASE: " + entry)
 
@@ -138,8 +141,22 @@ for judge, cal_url in calendars.items():
                     else:
                         continue
 
+                if case_matches == 0:
+                    print("No case number matches")
+                    
+                else:
+                    case_matches = 0
+                    pass
+
         else:
             continue
+
+    if followed_cases == False: 
+        print("No case numbers followed on this calendar.")
+
+    else:
+        followed_cases = False # Reset flag
+        
 
 print("\n=== Search Complete ===")
 
