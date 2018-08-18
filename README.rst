@@ -11,8 +11,8 @@
     
 **CalScrape** is a tool for rapidly searching public federal judicial calendars
 for cases of interests. It is primarily geared toward journalists but would also
-    be useful to researchers and generally interested members of the public. It
-    provides an alternative (and free) way to following cases aside from PACER.
+be useful to researchers and generally interested members of the public. It
+provides an alternative (and free) way to following cases aside from PACER.
 
 As of writing, CalScrape currently only supports calendars for the U.S. District
 Court for the Northern District of California (NDCAL). Ultimately the goal is to
