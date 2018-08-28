@@ -1,12 +1,20 @@
-# spatula: a module for extracting judicial calendars from court websites
+"""A module to deliver raw scraped web content."""
 
+import requests
 from lxml import html
 
-    def getcal(self):
-        """Download the calendar and load the contents""" 
-        cal = requests.get(self.calurl)
-        caltree = html.fromstring(cal.content)
-        calcontent = caltree.xpath('//td/text()')
-        return calcontent
+class Spatula():
+    """Scraped web content object for parsing"""
 
+    def __init__(self, url):
+        """Initialize attributes for scraper"""
+        self.url = url
+        self.tree = ''
 
+    def scrape(self):
+        """Download the content and load the contents"""
+        page = requests.get(self.url)
+
+        # Use `content` because `fromstring` expects bytes as input
+        self.tree = html.fromstring(page.content)
+        return self.tree
