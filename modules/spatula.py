@@ -13,8 +13,14 @@ class Spatula():
 
     def scrape(self):
         """Download the content and load the contents"""
-        page = requests.get(self.url)
+        try:
+            page = requests.get(self.url)
 
-        # Use `content` because `fromstring` expects bytes as input
-        self.tree = html.fromstring(page.content)
-        return self.tree
+            # Use `content` because `fromstring` expects bytes as input
+            self.tree = html.fromstring(page.content)
+            return self.tree
+
+        except requests.exceptions.RequestException as e:
+            print("Connection error. Check internet connection")
+            print("Received this error:")
+            print(e)
