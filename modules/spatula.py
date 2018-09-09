@@ -10,6 +10,7 @@ class Spatula():
         """Initialize attributes for scraper"""
         self.url = url
         self.tree = ''
+        self.raw = ''
 
     def scrape(self):
         """Download the content and load the contents"""
@@ -24,3 +25,8 @@ class Spatula():
             print("Connection error. Check internet connection")
             print("Received this error:")
             print(e)
+
+    def serve_cand(self):
+        """Serve up raw calendar data from the CAND court"""
+        self.raw = self.tree.xpath('//td/text()')
+        return self.raw
