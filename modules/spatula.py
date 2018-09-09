@@ -1,4 +1,4 @@
-"""A module to deliver raw scraped web content."""
+"""A module to deliver raw scraped court calendars."""
 
 import requests
 from lxml import html
