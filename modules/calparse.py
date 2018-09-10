@@ -1,6 +1,6 @@
 """A module for parsing html from public court calendars"""
 
-# from datetime import date
+from datetime import datetime
 import re
 
 class ParsedCal():
@@ -21,8 +21,14 @@ class ParsedCal():
             courtdate = re.search(cal_dateformat, entry)
         
             if courtdate:
-                #TODO Reformat dates as datetime dates
-                self.courtdates.append(courtdate.group())
+                
+                try:
+                    fmt_courtdate = datetime.strptime(
+                            courtdate.group(), '%A, %b %d %Y')
+                    self.courtdates.append(fmt_courtdate)
+               
+                except ValueError:
+                    pass
 
             else:
                 continue
