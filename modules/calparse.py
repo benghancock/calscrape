@@ -14,20 +14,20 @@ class ParsedCal():
         """
         Load the raw body of a CAND calendar and get dates
         """
-        self.cal_dates = [] 
+        self.courtdates = []
         cal_dateformat = r'\b\w.+\d+.201\d\b'
 
         for entry in self.raw:
-            cal_date = re.search(cal_dateformat, entry)
-            
-            if cal_date:
+            courtdate = re.search(cal_dateformat, entry)
+        
+            if courtdate:
                 #TODO Reformat dates as datetime dates
-                self.cal_dates.append(cal_date.group())
+                self.courtdates.append(courtdate.group())
 
             else:
                 continue
 
-        return self.cal_dates
+        return self.courtdates
 
 
 # calcontent = caltree.xpath('//td/text()')
