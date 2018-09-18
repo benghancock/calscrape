@@ -8,7 +8,7 @@ class ParsedCal():
 
     def __init__(self, raw):
         """Initialize parsed calendar's objects"""
-        self.raw = raw 
+        self.raw = raw
 
     def cand_getalldates(self):
         """
@@ -21,7 +21,6 @@ class ParsedCal():
             courtdate = re.search(cal_dateformat, entry)
         
             if courtdate:
-                
                 try:
                     formatted_courtdate = datetime.strptime(
                             courtdate.group(), '%A, %b %d %Y')
@@ -59,7 +58,6 @@ class ParsedCal():
             result = ''
 
             if courtdate:
-                
                 try:
                     current_courtdate = self.cand_formatdate(courtdate.group())
 
@@ -67,7 +65,6 @@ class ParsedCal():
                     pass
 
             if courttime:
-                
                 try:
                     current_courttime = self.cand_formattime(courttime.group())
 
@@ -76,48 +73,19 @@ class ParsedCal():
             
             if match:
                 match_text = entry 
+
+                # Details of hearing are at next index location in list
+                details_index = self.raw.index(entry) + 1
+                match_details = self.raw[details_index]
+                
                 dateinfo = datetime.combine(current_courtdate,
                         current_courttime)
                 clean_date = datetime.strftime(dateinfo, '%a %d %b %Y %I:%M %P')
 
-                result = f'{clean_date}\t{match_text}'
+                result = f'{clean_date}\t{match_text}\t{match_details}'
                 results.append(result)
 
             else:
                 continue
 
         return results
-        
-
-
-# calcontent = caltree.xpath('//td/text()')
-# 
-# # Build a list with all the entries on the calendar 
-#     tree = html.fromstring(cal.content)
-#     content = tree.xpath('//td/text()')
-# 
-#     # Search the list for desired keywords
-#     for keyword in searchkeys:
-#         current_key = r'\b' + keyword + r'\b' 
-# 
-#         for entry in content:
-#             date = re.search(dateformat, entry)           
-#             match = re.search(current_key, entry, re.IGNORECASE)
-# 
-#             # Grab the dates while scanning; only print if keyword mathc
-#             if date:
-#                 currentdate = date
-#             
-#             elif match:
-#                 word_matches += 1
-#                 judge_matches += 1
-#                 total_matches += 1            
-#                 print(currentdate.group())
-#                 print(entry)
-#                 
-#                 # Get hearing information in next entry and print
-#                 hearing_index = content.index(entry) + 1
-#                 print(content[hearing_index])
-# 
-#             else:
-#                 continue
