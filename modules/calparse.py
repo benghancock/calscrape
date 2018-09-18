@@ -75,10 +75,10 @@ class ParsedCal():
                     pass
             
             if match:
-                match_text = match.group()
+                match_text = entry 
                 dateinfo = datetime.combine(current_courtdate,
                         current_courttime)
-                clean_date = datetime.strftime(dateinfo, '%a %b %Y %I:%M %P')
+                clean_date = datetime.strftime(dateinfo, '%a %d %b %Y %I:%M %P')
 
                 result = f'{clean_date}\t{match_text}'
                 results.append(result)
