@@ -2,6 +2,7 @@
 
 from datetime import datetime
 import re
+import pandas as pd
 
 class ParsedCal():
     """A calendar parser object"""
@@ -45,17 +46,20 @@ class ParsedCal():
         return formatted_courttime
         
     def cand_search(self, searchterm):
-        """Return a list of calendar items matching search term"""
-        results = []
+        """Return a pandas dataframe with matching calendar entries"""
         cal_dateformat = r'\b\w.+\d+.201\d\b'
         cal_timepattern = r'\d+:\d+\w+(AM|PM)'
         cal_searchpattern = r'\b' + searchterm + r'\b'
+
+        # Create lists to hold the data series
+        dates = []
+        captions = []
+        details = []
 
         for entry in self.raw:
             courtdate = re.search(cal_dateformat, entry)
             courttime = re.search(cal_timepattern, entry) 
             match = re.search(cal_searchpattern, entry, re.IGNORECASE)
-            result = ''
 
             if courtdate:
                 try:
@@ -72,20 +76,26 @@ class ParsedCal():
                     pass
             
             if match:
-                match_text = entry 
+                dateinfo = datetime.combine(current_courtdate, 
+                        current_courttime)
+                dates.append(dateinfo)
+                
+                caption = entry 
+                captions.append(caption)
 
                 # Details of hearing are at next index location in list
                 details_index = self.raw.index(entry) + 1
-                match_details = self.raw[details_index]
-                
-                dateinfo = datetime.combine(current_courtdate,
-                        current_courttime)
-                clean_date = datetime.strftime(dateinfo, '%a %d %b %Y %I:%M %P')
-
-                result = f'{clean_date}\t{match_text}\t{match_details}'
-                results.append(result)
+                caption_details = self.raw[details_index]
+                details.append(caption_details)
 
             else:
                 continue
 
-        return results
+        matches_df = pd.DataFrame({
+            'date': dates,
+            'captions': captions,
+            'details': details
+            })
+        matches_df.set_index('date', inplace=True)
+        
+        return matches_df
