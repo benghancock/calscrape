@@ -11,7 +11,6 @@ is supported.
 # from modules.calparse import ParsedCal
 # import pandas as pd
 # import re
-import pdb
 
 def prompt_user(supported):
     """Prompt the user and check for supported calendars
@@ -19,6 +18,8 @@ def prompt_user(supported):
     Argument 'supported' should be list
     """
     prompting = True
+    start_search = False 
+
     while prompting:
         
         prompt = "\nEnter the code of the federal court to be searched,\n"
@@ -27,18 +28,20 @@ def prompt_user(supported):
         
         selection = input(prompt)
 
-        if selection.lower() == "q":
+        if selection.lower() == "q": 
             prompting = False 
 
-        elif selection.lower() not in supported:
-            print("Not a valid selection.")
+        elif selection.lower() in supported:
+            start_search = True 
+            prompting = False
 
         else:
-            print("That's supported!")
-            prompting = False 
-        
+            print("Not a valid selection.")
+       
+    return start_search 
+
 def main():
-    """Print neatly formateed results of calendar search"""
+    """Print neatly formatted results of calendar search"""
    
     greeting = "\n##########################"
     greeting += "\n## Welcome to CalScrape ##"
@@ -47,7 +50,19 @@ def main():
     
     # Set the supported calendars
     supported = ['cand']
-    prompt_user(supported)
+    # Set a run flag
+    running = True
+    
+    while running:
+        
+        status = prompt_user(supported)
+        
+        if status == True:
+            print("stuff")
+            running = False
+
+        else:
+            running = False
 
 
 if __name__ == "__main__":
