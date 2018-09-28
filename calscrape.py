@@ -7,28 +7,31 @@ currently only the U.S. District Court for the Northern District
 is supported. 
 """
 
-from modules.spatula import Spatula
-from modules.calparse import ParsedCal
+# from modules.spatula import Spatula
+# from modules.calparse import ParsedCal
+# import pandas as pd
+# import re
+import pdb
 
-def open_calfile():
-    """Check for the existence of the calendar URLs file"""
-    supported = ['cand']
+def prompt_user(supported):
+    """Prompt the user and check for supported calendars
+
+    Argument 'supported' should be list
+    """
     prompting = True
-    
     while prompting:
         
-        prompt = "Enter the code of the federal court to be searched,\n"
+        prompt = "\nEnter the code of the federal court to be searched,\n"
         prompt += "e.g, \"cand\" for the Northern District of California.\n"
         prompt += "Or enter \"q\" to quit.\n"
         
         selection = input(prompt)
 
-        if selection.lower() not in supported:
-            print("Not a valid selection.")
-            continue
-
-        elif selection == "q":
+        if selection.lower() == "q":
             prompting = False 
+
+        elif selection.lower() not in supported:
+            print("Not a valid selection.")
 
         else:
             print("That's supported!")
@@ -36,7 +39,15 @@ def open_calfile():
         
 def main():
     """Print neatly formateed results of calendar search"""
-    open_calfile()
+   
+    greeting = "\n##########################"
+    greeting += "\n## Welcome to CalScrape ##"
+    greeting += "\n##########################"
+    print(greeting)
+    
+    # Set the supported calendars
+    supported = ['cand']
+    prompt_user(supported)
 
 
 if __name__ == "__main__":
