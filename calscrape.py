@@ -7,9 +7,9 @@ currently only the U.S. District Court for the Northern District
 is supported. 
 """
 
-# from modules.spatula import Spatula
-# from modules.calparse import ParsedCal
-# import pandas as pd
+from modules.spatula import Spatula
+from modules.calparse import ParsedCal
+import pandas as pd
 import re, json
 
 def prompt_user(supported):
@@ -80,9 +80,23 @@ def main():
                 running = False
 
             else:
-                for judge, url in calfile.items():
-                    print(judge.upper() + " "  + url) # test loop
                 
+                searchterm = input("Search term: ")
+                
+                for judge, url in calfile.items():
+                    page = Spatula(url)
+                    page.scrape()
+                    raw = page.serve_cand() #CAND only so far
+
+                    cal = ParsedCal(raw)
+                    matches = cal.cand_search(searchterm)
+                    print(matches)
+                    
+                    #TODO Create one merged, sorted dataframe
+                    #TODO Create a way to handle judge initials
+                    #TODO Handle empty dataframes gracefully
+
+
                 running = False
 
         else:
