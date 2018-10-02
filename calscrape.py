@@ -10,7 +10,7 @@ is supported.
 # from modules.spatula import Spatula
 # from modules.calparse import ParsedCal
 # import pandas as pd
-# import re
+import re, json
 
 def prompt_user(supported):
     """Prompt the user and check for supported calendars
@@ -40,6 +40,21 @@ def prompt_user(supported):
        
     return selection 
 
+def load_calfile(selection):
+    """Load the calendars JSON file
+
+    Expects arg `selection` as string
+    """
+    try: 
+        with open(f"data/{selection}-urls.json") as f:
+            calendars = json.load(f)
+    
+        return calendars
+
+    except FileNotFoundError as e:
+        print("No calendar file found for that court")
+        print(f"Error: {e}")    
+
 def main():
     """Print neatly formatted results of calendar search"""
    
@@ -50,16 +65,25 @@ def main():
     
     # Set the supported calendars
     supported = ['cand']
+    
     # Set a run flag
     running = True
     
     while running:
         
-        status = prompt_user(supported)
+        selection = prompt_user(supported)
         
-        if status != None:
-            print("stuff")
-            running = False
+        if selection != None:
+            calfile = load_calfile(selection)
+            
+            if calfile == None:
+                running = False
+
+            else:
+                for judge, url in calfile.items():
+                    print(judge.upper() + " "  + url) # test loop
+                
+                running = False
 
         else:
             running = False
