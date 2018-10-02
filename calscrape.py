@@ -15,10 +15,10 @@ is supported.
 def prompt_user(supported):
     """Prompt the user and check for supported calendars
 
-    Argument 'supported' should be list
+    Expects list as arg
     """
     prompting = True
-    start_search = False 
+    selection = None
 
     while prompting:
         
@@ -29,16 +29,16 @@ def prompt_user(supported):
         selection = input(prompt)
 
         if selection.lower() == "q": 
+            selection = None
             prompting = False 
 
         elif selection.lower() in supported:
-            start_search = True 
             prompting = False
 
         else:
             print("Not a valid selection.")
        
-    return start_search 
+    return selection 
 
 def main():
     """Print neatly formatted results of calendar search"""
@@ -57,7 +57,7 @@ def main():
         
         status = prompt_user(supported)
         
-        if status == True:
+        if status != None:
             print("stuff")
             running = False
 
