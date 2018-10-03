@@ -21,9 +21,10 @@ def prompt_user(supported):
 
     while prompting:
         
-        prompt = "\nEnter the code of the federal court to be searched,\n"
-        prompt += "e.g, \"cand\" for the Northern District of California.\n"
-        prompt += "Or enter \"q\" to quit.\n"
+        prompt = "\nEnter the code of the federal court to be searched,"
+        prompt += "\ne.g, \"cand\" for the Northern District of California."
+        prompt += "\nOr enter \"q\" to quit."
+        prompt += "\nSelection: "
         
         selection = input(prompt)
 
@@ -53,6 +54,21 @@ def load_calfile(selection):
     except FileNotFoundError as e:
         print("No calendar file found for that court")
         print(f"Error: {e}")    
+
+def read_results(results):
+    """Parse list of dicts to cleanly ouput results of search"""
+    for result in results:
+        judge = result.get('judge')
+        date = result.get('date')
+        formatted_date = date.strftime('%a %b %d')
+        case = result.get('case')
+        details = result.get('details')
+
+        print(f"Judge: {judge}")
+        print(f"Date: {formatted_date}")
+        print(f"Case: {case}")
+        print(f"Hearing: {details}")
+        print("\n")
 
 def main():
     """Print neatly formatted results of calendar search"""
@@ -101,7 +117,13 @@ def main():
                         for match in matches:
                             results.append(match) 
 
-                print(results)
+                if not results:
+                    print("No matches")
+
+                else:
+                    #TODO Sort results by date
+                    read_results(results)
+                
                 running = False
 
         else:
