@@ -2,7 +2,6 @@
 
 from datetime import datetime
 import re
-import pandas as pd
 
 class ParsedCal():
     """A calendar parser object"""
@@ -45,16 +44,13 @@ class ParsedCal():
         formatted_courttime = datetime.strptime(rawtime, '%I:%M%p').time()
         return formatted_courttime
         
-    def cand_search(self, searchterm):
-        """Return a pandas dataframe with matching calendar entries"""
+    def cand_search(self, searchterm, judge):
+        """Return a list of dicts with matching calendar entries"""
         cal_dateformat = r'\b\w.+\d+.201\d\b'
         cal_timepattern = r'\d+:\d+\w+(AM|PM)'
         cal_searchpattern = r'\b' + searchterm + r'\b'
 
-        # Create lists to hold the data series
-        dates = []
-        captions = []
-        details = []
+        results = []
 
         for entry in self.raw:
             courtdate = re.search(cal_dateformat, entry)
@@ -76,26 +72,23 @@ class ParsedCal():
                     pass
             
             if match:
+                result = {}
+
                 dateinfo = datetime.combine(current_courtdate, 
                         current_courttime)
-                dates.append(dateinfo)
-                
                 caption = entry 
-                captions.append(caption)
-
                 # Details of hearing are at next index location in list
                 details_index = self.raw.index(entry) + 1
                 caption_details = self.raw[details_index]
-                details.append(caption_details)
+
+                result['judge'] = judge
+                result['date'] = dateinfo
+                result['case'] = caption
+                result['details'] = caption_details
+
+                results.append(result)
 
             else:
                 continue
-
-        matches_df = pd.DataFrame({
-            'date': dates,
-            'captions': captions,
-            'details': details
-            })
-        matches_df.set_index('date', inplace=True)
         
-        return matches_df
+        return results
