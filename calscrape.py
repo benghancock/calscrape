@@ -80,8 +80,11 @@ def main():
 
             else:
                 
-                searchterm = input("Search term: ")
+                searchterm = input("\nSearch term: ")
+                results = []
                 
+                print("Searching ...")
+
                 for judge, url in calfile.items():
                     page = Spatula(url)
                     page.scrape()
@@ -89,9 +92,16 @@ def main():
 
                     cal = ParsedCal(raw)
                     matches = cal.cand_search(searchterm, judge)
-                    print(matches)
+                    
+                    # Test whether list is empty
+                    if not matches:
+                        pass
+                    
+                    else:
+                        for match in matches:
+                            results.append(match) 
 
-
+                print(results)
                 running = False
 
         else:
