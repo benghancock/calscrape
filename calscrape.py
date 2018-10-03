@@ -9,8 +9,7 @@ is supported.
 
 from modules.spatula import Spatula
 from modules.calparse import ParsedCal
-import pandas as pd
-import re, json
+import json
 
 def prompt_user(supported):
     """Prompt the user and check for supported calendars
@@ -73,7 +72,7 @@ def main():
         
         selection = prompt_user(supported)
         
-        if selection != None:
+        if selection == "cand":
             calfile = load_calfile(selection)
             
             if calfile == None:
@@ -89,12 +88,8 @@ def main():
                     raw = page.serve_cand() #CAND only so far
 
                     cal = ParsedCal(raw)
-                    matches = cal.cand_search(searchterm)
+                    matches = cal.cand_search(searchterm, judge)
                     print(matches)
-                    
-                    #TODO Create one merged, sorted dataframe
-                    #TODO Create a way to handle judge initials
-                    #TODO Handle empty dataframes gracefully
 
 
                 running = False
