@@ -101,6 +101,22 @@ def load_calfile(selection):
         print("No calendar file found for that court")
         print(f"Error: {e}")    
 
+def load_searchfile():
+    """Load the search keys file in list mode"""
+    searchterms = None
+    
+    try:
+        with open("user/searchterms.json") as f:
+            searchterms = json.load(f)
+
+        return searchterms
+
+    except FileNotFoundError as e:
+        print("Could not find search term list file.")
+        print(f"Error: {e}")
+
+    return searchterms
+
 def read_results(results):
     """Parse list of dicts to cleanly ouput results of search"""
     for result in results:
@@ -164,28 +180,32 @@ def main():
                                 results.append(match)
 
                 elif mode == "list":
-                    # Dummy list for testing
-                    searchterms = ['google', 'facebook', 'pacific gas']
+                    searchterms = load_searchfile()
+                    
+                    if searchterms == None:
+                        running = False
 
-                    print("Searching ...")
+                    else:
 
-                    for judge, url in calfile.items():
-                            page = Spatula(url)
-                            page.scrape()
-                            raw = page.serve_cand()
+                        print("Searching ...")
 
-                            cal = ParsedCal(raw)
-                            
-                            for searchterm in searchterms:
-                                matches = cal.cand_search(searchterm, judge)
+                        for judge, url in calfile.items():
+                                page = Spatula(url)
+                                page.scrape()
+                                raw = page.serve_cand()
+
+                                cal = ParsedCal(raw)
                                 
-                                # Test whether list is empty
-                                if not matches:
-                                    pass
-                                
-                                else:
-                                    for match in matches:
-                                        results.append(match)
+                                for searchterm in searchterms:
+                                    matches = cal.cand_search(searchterm, judge)
+                                    
+                                    # Test whether list is empty
+                                    if not matches:
+                                        pass
+                                    
+                                    else:
+                                        for match in matches:
+                                            results.append(match)
 
                 if not results:
                     print("No matches")
