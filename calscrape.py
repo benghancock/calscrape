@@ -45,7 +45,7 @@ def prompt_user(supported):
 
     while prompting:
         
-        selection= input("\nSelection >> ")
+        selection = input("\nSelection >> ")
         
         if selection.lower() == "q": 
             selection = None
@@ -61,6 +61,31 @@ def prompt_user(supported):
        
     return selection 
 
+def pick_mode():
+    """Prompts for list-based or single keyword search mode"""
+    prompt = "\nPlease pick a search mode."
+    prompt += "\nEnter \"keyword\" for a single keyword search,"
+    prompt += "\nor enter \"list\" for a list-based search."
+    print(prompt)
+
+    prompting = True
+    mode = None
+
+    while prompting:
+        
+        mode = input("\nMode >> ")
+
+        if mode == "keyword":
+            prompting = False
+
+        elif mode == "list":
+            prompting = False
+
+        else:
+            print("Not a valid mode selection.")
+       
+    return mode
+    
 def load_calfile(selection):
     """Load the calendars JSON file
 
@@ -114,26 +139,53 @@ def main():
 
             else:
                 
-                searchterm = input("\nSearch term: ")
+                mode = pick_mode()
                 results = []
-                
-                print("Searching ...")
 
-                for judge, url in calfile.items():
-                    page = Spatula(url)
-                    page.scrape()
-                    raw = page.serve_cand() #CAND only so far
+                if mode == "keyword":
+                    searchterm = input("\nKeyword: ")
+                    
+                    print("Searching ...")
 
-                    cal = ParsedCal(raw)
-                    matches = cal.cand_search(searchterm, judge)
-                    
-                    # Test whether list is empty
-                    if not matches:
-                        pass
-                    
-                    else:
-                        for match in matches:
-                            results.append(match) 
+                    for judge, url in calfile.items():
+                        page = Spatula(url)
+                        page.scrape()
+                        raw = page.serve_cand()
+
+                        cal = ParsedCal(raw)
+                        matches = cal.cand_search(searchterm, judge)
+                        
+                        # Test whether list is empty
+                        if not matches:
+                            pass
+                        
+                        else:
+                            for match in matches:
+                                results.append(match)
+
+                elif mode == "list":
+                    # Dummy list for testing
+                    searchterms = ['google', 'facebook', 'pacific gas']
+
+                    print("Searching ...")
+
+                    for judge, url in calfile.items():
+                            page = Spatula(url)
+                            page.scrape()
+                            raw = page.serve_cand()
+
+                            cal = ParsedCal(raw)
+                            
+                            for searchterm in searchterms:
+                                matches = cal.cand_search(searchterm, judge)
+                                
+                                # Test whether list is empty
+                                if not matches:
+                                    pass
+                                
+                                else:
+                                    for match in matches:
+                                        results.append(match)
 
                 if not results:
                     print("No matches")
