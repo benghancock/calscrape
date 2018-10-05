@@ -1,10 +1,8 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 
 """CalScrape - A tool for searching federal court calendars
 
-This is the main script for scraping and returning the data;
-currently only the U.S. District Court for the Northern District
-is supported. 
+This is the main script for scraping and returning calendar data.
 """
 
 from modules.spatula import Spatula
@@ -121,8 +119,9 @@ def main():
                     print("No matches")
 
                 else:
-                    #TODO Sort results by date
-                    read_results(results)
+                    results_ordered = sorted(results, 
+                            key = lambda k: k['date'])
+                    read_results(results_ordered)
                 
                 running = False
 
