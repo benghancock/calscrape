@@ -9,6 +9,27 @@ from modules.spatula import Spatula
 from modules.calparse import ParsedCal
 import json
 
+def greet_user(version, supported):
+    """Greet the user and provide basic info about the program"""
+    greeting = "\n\t#################"
+    greeting += "\n\t##  CalScrape  ##"
+    greeting += "\n\t#################"
+
+    description = "A tool for rapidly searching judicial calendars."
+    version_line = f"VERSION {version}"
+    
+    print(greeting)
+    
+    print("\n")
+    print(description)
+    print(version_line)
+    
+    print("\nThe following courts are currently supported:")
+
+    for court in supported:
+        print(court.upper())
+
+
 def prompt_user(supported):
     """Prompt the user and check for supported calendars
 
@@ -70,15 +91,12 @@ def read_results(results):
 
 def main():
     """Print neatly formatted results of calendar search"""
-   
-    greeting = "\n##########################"
-    greeting += "\n## Welcome to CalScrape ##"
-    greeting += "\n##########################"
-    print(greeting)
-    
+    version = "1.0" 
     # Set the supported calendars
     supported = ['cand']
-    
+
+    greet_user(version=version, supported=supported)
+
     # Set a run flag
     running = True
     
