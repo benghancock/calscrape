@@ -58,7 +58,7 @@ def read_results(results):
     for result in results:
         judge = result.get('judge')
         date = result.get('date')
-        formatted_date = date.strftime('%a %b %d')
+        formatted_date = date.strftime('%a %b %d %I:%M %p')
         case = result.get('case')
         details = result.get('details')
 
