@@ -35,23 +35,25 @@ def prompt_user(supported):
 
     Expects list as arg
     """
+    prompt = "\nEnter the code of the court to be searched. For example,"
+    prompt += "\nenter \"CAND\" for the Northern District of California."
+    prompt += "\nOr enter \"q\" to quit."
+    print(prompt)
+
     prompting = True
     selection = None
 
     while prompting:
         
-        prompt = "\nEnter the code of the federal court to be searched,"
-        prompt += "\ne.g, \"cand\" for the Northern District of California."
-        prompt += "\nOr enter \"q\" to quit."
-        prompt += "\nSelection: "
+        selection= input("\nSelection >> ")
         
-        selection = input(prompt)
-
         if selection.lower() == "q": 
             selection = None
             prompting = False 
 
         elif selection.lower() in supported:
+            # Make the value lowercase before returning
+            selection = selection.lower()
             prompting = False
 
         else:
