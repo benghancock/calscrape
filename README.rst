@@ -50,7 +50,7 @@ Or you can download the latest release from the **releases** tab and unzip it
 
 ::
 
-    $ pip install requirements.txt
+    $ pip install -r requirements.txt
 
 You should see a list of packages being installed. You may need to install
 ``pip`` on your machine if you don't have it already.
