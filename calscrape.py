@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""CalScrape - A tool for searching federal court calendars
+"""CalScrape - A tool for rapidly searching judicial calendars
 
 This is the main script for scraping and returning calendar data.
 """
@@ -11,23 +11,16 @@ import json
 
 def greet_user(version, supported):
     """Greet the user and provide basic info about the program"""
-    greeting = "\n\t#################"
-    greeting += "\n\t##  CalScrape  ##"
-    greeting += "\n\t#################"
+    greeting = "\nCalScrape: Rapidly search judicial calendars"
+    version_line = f"version {version}"
 
-    description = "A tool for rapidly searching judicial calendars."
-    version_line = f"VERSION {version}"
-    
     print(greeting)
-    
-    print("\n")
-    print(description)
     print(version_line)
-    
+   
     print("\nThe following courts are currently supported:")
 
     for court in supported:
-        print(court.upper())
+        print("- " + court.upper())
 
 
 def prompt_user(supported):
@@ -35,9 +28,7 @@ def prompt_user(supported):
 
     Expects list as arg
     """
-    prompt = "\nEnter the code of the court to be searched. For example,"
-    prompt += "\nenter \"CAND\" for the Northern District of California."
-    prompt += "\nOr enter \"q\" to quit."
+    prompt = "\nEnter the code of the court to be searched:"
     print(prompt)
 
     prompting = True
