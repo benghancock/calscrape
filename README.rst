@@ -13,48 +13,47 @@ CalScrape
     -- `Press-Enterprise Co. v. Superior Court (1986)
     <https://www.law.cornell.edu/supremecourt/text/478/1>`_
     
-**CalScrape** is a tool for rapidly searching public federal judicial calendars
-for cases of interests. It is primarily geared toward journalists but would also
-be useful to researchers and generally interested members of the public. It
-provides an alternative (and free) way to following cases aside from PACER.
+**CalScrape** is a tool for rapidly searching judicial calendars for court
+hearings of interest. It is primarily geared toward journalists but would also
+be useful to researchers and interested members of the public. It provides an
+alternative (and free) way to follow hearings in cases aside from PACER.
 
-As of writing, CalScrape currently only supports calendars for the U.S. District
-Court for the Northern District of California (NDCAL). Ultimately the goal is to
-extend this to other federal court calendars in California and other states.
+As of writing, CalScrape only supports the U.S. District Court for the Northern
+District of California (CAND). Ultimately the goal is to extend this to other
+federal and state courts throughout the United States. A lot of work has been
+done to make the code modular so that bolting on support for further courts can
+be as seamless as possible. 
 
 Installation 
 ------------
 
-CalScrape requires your machine to be running Python 3x. It also has several
-dependencies. Follow the instructions below to install and run CalScrape (these
-should cover MacOS and most Linux distros; Windows instructions not yet
-available).
+CalScrape requires Python 3.6+. It also has several dependencies. Follow the
+instructions below to install and run CalScrape. This should cover MacOS and
+most Linux distros; instructions for Windows are not yet available.
 
-
-* `Download <https://www.python.org/downloads/>`_ the latest version of Python.
-* Open a Terminal window and install the Requests library with the command:
-
-:: 
-    
-    $ pip install requests
-
-* Then install the LXML library using the following command:
-
-:: 
-    
-    $ pip install lxml
-
-You can install CalScrape by then entering the following commands:
+* Clone the repository using the URL that appears after clicking "Clone or
+  download"
 
 :: 
 
-    $ git clone https://github.com/elwha1/calscrape.git 
+    $ git clone https://github.com/elwha1/calscrape.git
+
+Or you can download the latest release from the **releases** tab and unzip it
+
+* Move into the CalScrape directory
+
+::
+
     $ cd calscrape
 
-If you do not currently have Git installed on your computer, MacOS will prompt
-you to install it. This project is currently set to private so you may need to
-speak with me to get access. (Note: You may need to install ``pip`` or
-``pip3``.)
+* Install the software package dependencies
+
+::
+
+    $ pip install requirements.txt
+
+You should see a list of packages being installed. You may need to install
+``pip`` on your machine if you don't have it already.
 
 Running CalScrape 
 -----------------
@@ -63,14 +62,31 @@ Once in the file directory, CalScrape can be run via this terminal command:
 
 ::
 
-    $ python3 calscrape.py
+    $ python calscrape.py
 
-The keyword search terms and cases of interest are configured in the
-``searchterms.json`` and ``cases.json`` files in the directory. Tools are
-coming to allow users to configure this file and search by case number.
+You may need to substitute ``python`` for ``python3``, depending on your
+installation. CalScrape supports two search modes: ``keyword`` and ``list``.
+The ``list`` mode searches the calendars for all terms stored in the file
+``user/searchterms.json``. Feel free to edit this file to include as many
+terms as you want (company names, party names, etc.). Just be cautious to
+format the list correctly:
 
-Support 
+::
+
+    ["List", "the", "terms", "like", "this"]
+
+Also be aware that including a lot of search terms may return a large volume of
+results -- making the tool less helpful. 
+
+Contributing
+------------
+CalScrape is an open source project being developed to further the public
+interest and increase awareness about the court system. Contributions are
+welcome. If you encounter an issue, please file it using the issue-tracking
+tool. If you'd like to contribute to the project, send me an email first at:
+ben.hancock@protonmail.com 
+
+License
 -------
-
-If you want to contribute to this project, experience problems or have other
-questions, please email me at bghancock@gmail.com
+CalScrape is licensed under the GNU Affero General Public License. For more
+details, see the LICENSE.txt file.
