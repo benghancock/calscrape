@@ -114,8 +114,8 @@ def load_searchfile():
     except FileNotFoundError as e:
         print("Could not find search term list file.")
         print(f"Error: {e}")
-
-    return searchterms
+        
+        return searchterms
 
 def read_results(results):
     """Parse list of dicts to cleanly ouput results of search"""
