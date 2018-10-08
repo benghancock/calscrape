@@ -178,7 +178,11 @@ def main():
 
                     else:
 
-                        print("Searching ...")
+                        print("Searching for the following terms...")
+                        for searchterm in searchterms:
+                            print(searchterm, end = " ")
+
+                        print("\n")
 
                         for judge, url in calfile.items():
                                 page = Spatula(url)
