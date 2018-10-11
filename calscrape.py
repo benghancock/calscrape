@@ -5,9 +5,10 @@
 This is the main script for scraping and returning calendar data.
 """
 
+import json
+
 from modules.spatula import Spatula
 from modules.calparse import ParsedCal
-import json
 
 VERSION = "1.0"
 SUPPORTED_CALENDARS = ['cand']
