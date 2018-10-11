@@ -9,6 +9,10 @@ from modules.spatula import Spatula
 from modules.calparse import ParsedCal
 import json
 
+VERSION = "1.0"
+SUPPORTED_CALENDARS = ['cand']
+
+
 def greet_user(version, supported):
     """Greet the user and provide basic info about the program"""
     greeting = "\nCalScrape: Rapidly search judicial calendars"
@@ -23,34 +27,25 @@ def greet_user(version, supported):
         print("- " + court.upper())
 
 
-def prompt_user(supported):
+def prompt_user():
     """Prompt the user and check for supported calendars
 
     Expects list as arg
     """
-    prompt = "\nEnter the code of the court to be searched:"
-    print(prompt)
+    print("\nEnter the code of the court to be searched:")
 
-    prompting = True
-    selection = None
+    while True:
 
-    while prompting:
+        selection = input("\nSelection >> ").lower()
 
-        selection = input("\nSelection >> ")
+        if selection == "q":
+            return None
 
-        if selection.lower() == "q":
-            selection = None
-            prompting = False
-
-        elif selection.lower() in supported:
-            # Make the value lowercase before returning
-            selection = selection.lower()
-            prompting = False
+        elif selection in SUPPORTED_CALENDARS:
+            return selection
 
         else:
             print("Not a valid selection.")
-
-    return selection
 
 
 def pick_mode():
@@ -79,11 +74,13 @@ def pick_mode():
     return mode
 
 
-def load_calfile(selection):
+def load_calfile():
     """Load the calendars JSON file
 
     Expects arg `selection` as string
     """
+    selection = prompt_user()
+
     try:
         with open(f"data/{selection}-urls.json") as f:
             calendars = json.load(f)
@@ -130,96 +127,71 @@ def read_results(results):
 
 def main():
     """Print neatly formatted results of calendar search"""
-    version = "1.0"
-    # Set the supported calendars
-    supported = ['cand']
 
-    greet_user(version=version, supported=supported)
+    greet_user(version=VERSION, supported=SUPPORTED_CALENDARS)
 
-    # Set a run flag
-    running = True
+    while True:
 
-    while running:
+        calfile = load_calfile()
 
-        selection = prompt_user(supported)
+        if calfile is None:
+            return
 
-        if selection == "cand":
-            calfile = load_calfile(selection)
+        mode = pick_mode()
+        results = []
 
-            if calfile is None:
-                running = False
+        if mode == "keyword":
+            searchterm = input("\nKeyword: ")
+
+            print("Searching ...")
+
+            for judge, url in calfile.items():
+                page = Spatula(url)
+                page.scrape()
+                raw = page.serve_cand()
+
+                cal = ParsedCal(raw)
+                matches = cal.cand_search(searchterm, judge)
+
+                # cand_search returns an empty list if there are no matches
+                results.extend(matches)
+
+        elif mode == "list":
+            searchterms = load_searchfile()
+
+            if searchterms is None:
+                return
 
             else:
 
-                mode = pick_mode()
-                results = []
+                print("Searching for the following terms...")
+                for searchterm in searchterms:
+                    print(searchterm, end=" ")
 
-                if mode == "keyword":
-                    searchterm = input("\nKeyword: ")
+                print("\n")
 
-                    print("Searching ...")
+                for judge, url in calfile.items():
+                    page = Spatula(url)
+                    page.scrape()
+                    raw = page.serve_cand()
 
-                    for judge, url in calfile.items():
-                        page = Spatula(url)
-                        page.scrape()
-                        raw = page.serve_cand()
+                    cal = ParsedCal(raw)
 
-                        cal = ParsedCal(raw)
-                        matches = cal.cand_search(searchterm, judge)
+                    for searchterm in searchterms:
+                        matches = cal.cand_search(searchterm,
+                                                  judge)
 
-                        # Test whether list is empty
-                        if not matches:
-                            pass
+                        results.extend(matches)
 
-                        else:
-                            for match in matches:
-                                results.append(match)
-
-                elif mode == "list":
-                    searchterms = load_searchfile()
-
-                    if searchterms is None:
-                        running = False
-
-                    else:
-
-                        print("Searching for the following terms...")
-                        for searchterm in searchterms:
-                            print(searchterm, end=" ")
-
-                        print("\n")
-
-                        for judge, url in calfile.items():
-                            page = Spatula(url)
-                            page.scrape()
-                            raw = page.serve_cand()
-
-                            cal = ParsedCal(raw)
-
-                            for searchterm in searchterms:
-                                matches = cal.cand_search(searchterm,
-                                                          judge)
-
-                                # Test whether list is empty
-                                if not matches:
-                                    pass
-
-                                else:
-                                    for match in matches:
-                                        results.append(match)
-
-                if not results:
-                    print("No matches")
-
-                else:
-                    results_ordered = sorted(results,
-                                             key=lambda k: k['date'])
-                    read_results(results_ordered)
-
-                running = False
+        if not results:
+            print("No matches")
 
         else:
-            running = False
+            results_ordered = sorted(results,
+                                     key=lambda k: k['date'])
+            read_results(results_ordered)
+
+        return
 
 
 if __name__ == "__main__":
