@@ -190,23 +190,23 @@ def main():
                         print("\n")
 
                         for judge, url in calfile.items():
-                                page = Spatula(url)
-                                page.scrape()
-                                raw = page.serve_cand()
+                            page = Spatula(url)
+                            page.scrape()
+                            raw = page.serve_cand()
 
-                                cal = ParsedCal(raw)
+                            cal = ParsedCal(raw)
 
-                                for searchterm in searchterms:
-                                    matches = cal.cand_search(searchterm,
-                                                              judge)
+                            for searchterm in searchterms:
+                                matches = cal.cand_search(searchterm,
+                                                          judge)
 
-                                    # Test whether list is empty
-                                    if not matches:
-                                        pass
+                                # Test whether list is empty
+                                if not matches:
+                                    pass
 
-                                    else:
-                                        for match in matches:
-                                            results.append(match)
+                                else:
+                                    for match in matches:
+                                        results.append(match)
 
                 if not results:
                     print("No matches")

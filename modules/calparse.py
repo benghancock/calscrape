@@ -24,7 +24,7 @@ class ParsedCal():
             if courtdate:
                 try:
                     formatted_courtdate = datetime.strptime(
-                            courtdate.group(), '%A, %b %d %Y')
+                        courtdate.group(), '%A, %b %d %Y')
                     self.courtdates.append(formatted_courtdate)
 
                 except ValueError:
