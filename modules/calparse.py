@@ -3,6 +3,7 @@
 from datetime import datetime
 import re
 
+
 class ParsedCal():
     """A calendar parser object"""
 
@@ -19,13 +20,13 @@ class ParsedCal():
 
         for entry in self.raw:
             courtdate = re.search(cal_dateformat, entry)
-        
+
             if courtdate:
                 try:
                     formatted_courtdate = datetime.strptime(
                             courtdate.group(), '%A, %b %d %Y')
                     self.courtdates.append(formatted_courtdate)
-               
+
                 except ValueError:
                     pass
 
@@ -43,7 +44,7 @@ class ParsedCal():
         """Return a datetime formatted time"""
         formatted_courttime = datetime.strptime(rawtime, '%I:%M%p').time()
         return formatted_courttime
-        
+
     def cand_search(self, searchterm, judge):
         """Return a list of dicts with matching calendar entries"""
         cal_dateformat = r'\b\w.+\d+.201\d\b'
@@ -54,7 +55,7 @@ class ParsedCal():
 
         for entry in self.raw:
             courtdate = re.search(cal_dateformat, entry)
-            courttime = re.search(cal_timepattern, entry) 
+            courttime = re.search(cal_timepattern, entry)
             match = re.search(cal_searchpattern, entry, re.IGNORECASE)
 
             if courtdate:
@@ -70,13 +71,13 @@ class ParsedCal():
 
                 except ValueError:
                     pass
-            
+
             if match:
                 result = {}
 
-                dateinfo = datetime.combine(current_courtdate, 
-                        current_courttime)
-                caption = entry 
+                dateinfo = datetime.combine(current_courtdate,
+                                            current_courttime)
+                caption = entry
                 # Details of hearing are at next index location in list
                 details_index = self.raw.index(entry) + 1
                 caption_details = self.raw[details_index]
@@ -90,5 +91,5 @@ class ParsedCal():
 
             else:
                 continue
-        
+
         return results
