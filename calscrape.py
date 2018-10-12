@@ -16,7 +16,7 @@ def greet_user(version, supported):
 
     print(greeting)
     print(version_line)
-   
+
     print("\nThe following courts are currently supported:")
 
     for court in supported:
@@ -35,12 +35,12 @@ def prompt_user(supported):
     selection = None
 
     while prompting:
-        
+
         selection = input("\nSelection >> ")
-        
-        if selection.lower() == "q": 
+
+        if selection.lower() == "q":
             selection = None
-            prompting = False 
+            prompting = False
 
         elif selection.lower() in supported:
             # Make the value lowercase before returning
@@ -49,8 +49,8 @@ def prompt_user(supported):
 
         else:
             print("Not a valid selection.")
-       
-    return selection 
+
+    return selection
 
 def pick_mode():
     """Prompts for list-based or single keyword search mode"""
@@ -63,7 +63,7 @@ def pick_mode():
     mode = None
 
     while prompting:
-        
+
         mode = input("\nMode >> ")
 
         if mode == "keyword":
@@ -74,28 +74,27 @@ def pick_mode():
 
         else:
             print("Not a valid mode selection.")
-       
+
     return mode
-    
+
 def load_calfile(selection):
     """Load the calendars JSON file
 
     Expects arg `selection` as string
     """
-    try: 
+    try:
         with open(f"data/{selection}-urls.json") as f:
             calendars = json.load(f)
-    
         return calendars
 
     except FileNotFoundError as e:
         print("No calendar file found for that court")
-        print(f"Error: {e}")    
+        print(f"Error: {e}")
 
 def load_searchfile():
     """Load the search keys file in list mode"""
     searchterms = None
-    
+
     try:
         with open("user/searchterms.json") as f:
             searchterms = json.load(f)
@@ -105,7 +104,7 @@ def load_searchfile():
     except FileNotFoundError as e:
         print("Could not find search term list file.")
         print(f"Error: {e}")
-        
+
         return searchterms
 
 def read_results(results):
@@ -125,7 +124,7 @@ def read_results(results):
 
 def main():
     """Print neatly formatted results of calendar search"""
-    version = "1.0" 
+    version = "1.0"
     # Set the supported calendars
     supported = ['cand']
 
@@ -133,25 +132,24 @@ def main():
 
     # Set a run flag
     running = True
-    
+
     while running:
-        
+
         selection = prompt_user(supported)
-        
+
         if selection == "cand":
             calfile = load_calfile(selection)
-            
+
             if calfile == None:
                 running = False
 
             else:
-                
                 mode = pick_mode()
                 results = []
 
                 if mode == "keyword":
                     searchterm = input("\nKeyword: ")
-                    
+
                     print("Searching ...")
 
                     for judge, url in calfile.items():
@@ -161,18 +159,18 @@ def main():
 
                         cal = ParsedCal(raw)
                         matches = cal.cand_search(searchterm, judge)
-                        
+
                         # Test whether list is empty
                         if not matches:
                             pass
-                        
+
                         else:
                             for match in matches:
                                 results.append(match)
 
                 elif mode == "list":
                     searchterms = load_searchfile()
-                    
+
                     if searchterms == None:
                         running = False
 
@@ -188,16 +186,15 @@ def main():
                                 page = Spatula(url)
                                 page.scrape()
                                 raw = page.serve_cand()
-
                                 cal = ParsedCal(raw)
-                                
+
                                 for searchterm in searchterms:
                                     matches = cal.cand_search(searchterm, judge)
-                                    
+
                                     # Test whether list is empty
                                     if not matches:
                                         pass
-                                    
+
                                     else:
                                         for match in matches:
                                             results.append(match)
@@ -206,10 +203,10 @@ def main():
                     print("No matches")
 
                 else:
-                    results_ordered = sorted(results, 
+                    results_ordered = sorted(results,
                             key = lambda k: k['date'])
                     read_results(results_ordered)
-                
+
                 running = False
 
         else:
@@ -218,4 +215,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
