@@ -5,9 +5,14 @@
 This is the main script for scraping and returning calendar data.
 """
 
+import json
+
 from modules.spatula import Spatula
 from modules.calparse import ParsedCal
-import json
+
+VERSION = "1.0"
+SUPPORTED_CALENDARS = ['cand']
+
 
 def greet_user(version, supported):
     """Greet the user and provide basic info about the program"""
@@ -23,34 +28,26 @@ def greet_user(version, supported):
         print("- " + court.upper())
 
 
-def prompt_user(supported):
+def prompt_user():
     """Prompt the user and check for supported calendars
 
     Expects list as arg
     """
-    prompt = "\nEnter the code of the court to be searched:"
-    print(prompt)
+    print("\nEnter the code of the court to be searched:")
 
-    prompting = True
-    selection = None
+    while True:
 
-    while prompting:
+        selection = input("\nSelection >> ").lower()
 
-        selection = input("\nSelection >> ")
+        if selection == "q":
+            return None
 
-        if selection.lower() == "q":
-            selection = None
-            prompting = False
-
-        elif selection.lower() in supported:
-            # Make the value lowercase before returning
-            selection = selection.lower()
-            prompting = False
+        elif selection in SUPPORTED_CALENDARS:
+            return selection
 
         else:
             print("Not a valid selection.")
 
-    return selection
 
 def pick_mode():
     """Prompts for list-based or single keyword search mode"""
@@ -77,35 +74,38 @@ def pick_mode():
 
     return mode
 
-def load_calfile(selection):
-    """Load the calendars JSON file
 
-    Expects arg `selection` as string
-    """
+def load_calfile():
+    """Load the calendars JSON file"""
+    selection = prompt_user()
+
     try:
-        with open(f"data/{selection}-urls.json") as f:
-            calendars = json.load(f)
+        with open(f"data/{selection}-urls.json") as cal_f:
+            calendars = json.load(cal_f)
+
         return calendars
 
-    except FileNotFoundError as e:
+    except FileNotFoundError as err:
         print("No calendar file found for that court")
-        print(f"Error: {e}")
+        print(f"Error: {err}")
+
 
 def load_searchfile():
     """Load the search keys file in list mode"""
     searchterms = None
 
     try:
-        with open("user/searchterms.json") as f:
-            searchterms = json.load(f)
+        with open("user/searchterms.json") as search_f:
+            searchterms = json.load(search_f)
 
         return searchterms
 
-    except FileNotFoundError as e:
+    except FileNotFoundError as err:
         print("Could not find search term list file.")
-        print(f"Error: {e}")
+        print(f"Error: {err}")
 
         return searchterms
+
 
 def read_results(results):
     """Parse list of dicts to cleanly ouput results of search"""
@@ -122,95 +122,73 @@ def read_results(results):
         print(f"Hearing: {details}")
         print("\n")
 
+
 def main():
     """Print neatly formatted results of calendar search"""
-    version = "1.0"
-    # Set the supported calendars
-    supported = ['cand']
+    greet_user(version=VERSION, supported=SUPPORTED_CALENDARS)
 
-    greet_user(version=version, supported=supported)
+    while True:
 
-    # Set a run flag
-    running = True
+        calfile = load_calfile()
 
-    while running:
+        if calfile is None:
+            return
 
-        selection = prompt_user(supported)
+        mode = pick_mode()
+        results = []
 
-        if selection == "cand":
-            calfile = load_calfile(selection)
+        if mode == "keyword":
+            searchterm = input("\nKeyword: ")
 
-            if calfile == None:
-                running = False
+            print("Searching ...")
+
+            for judge, url in calfile.items():
+                page = Spatula(url)
+                page.scrape()
+                raw = page.serve_cand()
+
+                cal = ParsedCal(raw)
+                matches = cal.cand_search(searchterm, judge)
+
+                # cand_search returns an empty list if there are no matches
+                results.extend(matches)
+
+        elif mode == "list":
+            searchterms = load_searchfile()
+
+            if searchterms is None:
+                return
 
             else:
-                mode = pick_mode()
-                results = []
 
-                if mode == "keyword":
-                    searchterm = input("\nKeyword: ")
+                print("Searching for the following terms...")
+                for searchterm in searchterms:
+                    print(searchterm, end=" ")
 
-                    print("Searching ...")
+                print("\n")
 
-                    for judge, url in calfile.items():
-                        page = Spatula(url)
-                        page.scrape()
-                        raw = page.serve_cand()
+                for judge, url in calfile.items():
+                    page = Spatula(url)
+                    page.scrape()
+                    raw = page.serve_cand()
 
-                        cal = ParsedCal(raw)
-                        matches = cal.cand_search(searchterm, judge)
+                    cal = ParsedCal(raw)
 
-                        # Test whether list is empty
-                        if not matches:
-                            pass
+                    for searchterm in searchterms:
+                        matches = cal.cand_search(searchterm,
+                                                  judge)
 
-                        else:
-                            for match in matches:
-                                results.append(match)
+                        results.extend(matches)
 
-                elif mode == "list":
-                    searchterms = load_searchfile()
-
-                    if searchterms == None:
-                        running = False
-
-                    else:
-
-                        print("Searching for the following terms...")
-                        for searchterm in searchterms:
-                            print(searchterm, end = " ")
-
-                        print("\n")
-
-                        for judge, url in calfile.items():
-                                page = Spatula(url)
-                                page.scrape()
-                                raw = page.serve_cand()
-                                cal = ParsedCal(raw)
-
-                                for searchterm in searchterms:
-                                    matches = cal.cand_search(searchterm, judge)
-
-                                    # Test whether list is empty
-                                    if not matches:
-                                        pass
-
-                                    else:
-                                        for match in matches:
-                                            results.append(match)
-
-                if not results:
-                    print("No matches")
-
-                else:
-                    results_ordered = sorted(results,
-                            key = lambda k: k['date'])
-                    read_results(results_ordered)
-
-                running = False
+        if not results:
+            print("No matches")
 
         else:
-            running = False
+            results_ordered = sorted(results,
+                                     key=lambda k: k['date'])
+            read_results(results_ordered)
+
+        return
 
 
 if __name__ == "__main__":

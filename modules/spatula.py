@@ -1,7 +1,8 @@
 """A module to deliver raw scraped court calendars."""
 
-import requests
 from lxml import html
+import requests
+
 
 class Spatula():
     """Scraped web content object for parsing"""
