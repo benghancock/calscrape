@@ -1,4 +1,8 @@
-"""A module for parsing html from public court calendars"""
+"""
+A module for parsing html from public court calendars
+This approach to be deprecated in following versions
+"""
+
 
 from datetime import datetime
 import re
