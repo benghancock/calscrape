@@ -58,30 +58,57 @@ class CANDParser(CalendarParser):
             judge_calendar = self.cook_lxml(sub_url)
 
             if judge_calendar:
-                hearings = self.parse_hearings(judge_name, judge_calendar)
-                print(hearings)
+                hearings_data = self.parse_hearings(judge_name, judge_calendar)
+                print(hearings_data)
 
             else:
                 continue
 
     def parse_hearings(self, judge_name, calendar_soup):
         """Parse all hearing information on a given CAND judge's calendar"""
-        hearings = []
+        # Start by just testing hearing times
+        hearing_data = []
 
         # Calendar is organized as a table, get table rows ('tr')
-        rows = calendar_soup.find_all('tr')
+        table = calendar_soup.find('table', attrs={'class':'Calendar'})
 
-        # Starting POC by grabbing hearing times only at first
-        for row in rows:
-            hearing_time = re.search(self.time_format, row.text)
+        try:
+            for row in table.find_all('tr'):
+                for cell in row.find_all('td'):
+                    court_time= re.search(self.cal_timepattern, cell.text)
 
-            if hearing_time:
-                hearing = {}
-                hearing['judge'] = judge_name
-                hearing['time'] = hearing_time.group()
-                hearings.extend(hearing)
+                    if court_time:
+                        try:
+                            hearing_time = datetime.strptime(court_time.group(),
+                                                                  self.time_format).time()
+                            data = {'judge': judge_name,
+                                    'hearing_time': hearing_time}
+                            hearing_data.append(data)
+                            continue
 
-            else:
-                continue
+                        except ValueError:
+                            pass
 
-        return hearings
+                    else:
+                        continue
+
+        except AttributeError:
+            pass
+
+        return hearing_data 
+# 
+# 
+#         # Starting POC by grabbing hearing times only at first
+#         for row in rows:
+#             hearing_time = re.search(self.time_format, row.text)
+# 
+#             if hearing_time:
+#                 hearing = {}
+#                 hearing['judge'] = judge_name
+#                 hearing['time'] = hearing_time.group()
+#                 hearings.extend(hearing)
+# 
+#             else:
+#                 continue
+# 
+#         return hearings
