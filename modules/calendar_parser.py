@@ -22,8 +22,9 @@ class CalendarParser():
         self.date_format = '%A, %b %d %Y'
 
         # Regex patterns to detect times and dates on calendars
-        self.cal_datepattern = r'\b\w.+\d+.201\d\b'
-        self.cal_timepattern = r'\d+:\d+\w+(AM|PM)'
+        self.cal_datepat = r'\b\w.+\d+.201\d\b'
+        self.cal_timepat = r'\d+:\d+\w+(AM|PM)'
+        self.cal_hearingpat =  r'^(\d:\d\d-[a-zA-Z]+-\d+-[a-zA-Z]+)\s-\s(.*)$'
 
     def cook_lxml(self, url):
         """Return a BeautifulSoup object for a given calendar URL using LXML"""
@@ -75,7 +76,8 @@ class CANDParser(CalendarParser):
         try:
             for row in table.find_all('tr'):
                 for cell in row.find_all('td'):
-                    court_time= re.search(self.cal_timepattern, cell.text)
+                    court_date = re.search(self.cal_datepat, cell.text)
+                    court_time= re.search(self.cal_timepat, cell.text)
 
                     if court_time:
                         try:
@@ -95,20 +97,4 @@ class CANDParser(CalendarParser):
         except AttributeError:
             pass
 
-        return hearing_data 
-# 
-# 
-#         # Starting POC by grabbing hearing times only at first
-#         for row in rows:
-#             hearing_time = re.search(self.time_format, row.text)
-# 
-#             if hearing_time:
-#                 hearing = {}
-#                 hearing['judge'] = judge_name
-#                 hearing['time'] = hearing_time.group()
-#                 hearings.extend(hearing)
-# 
-#             else:
-#                 continue
-# 
-#         return hearings
+        return hearing_data
