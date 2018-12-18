@@ -33,7 +33,7 @@ command line, so these instructions assume some familiarity with the terminal.
 
 #. Download and install the `latest version of Python
    <https://www.python.org/downloads/>`__
-#. Download Calscrape in one of two ways:
+#. Download CalScrape in one of two ways:
 
    * If you have ``git`` installed on your machine, you can run ``git clone
      https://github.com/elwha1/calscrape.git`` to clone the repository
