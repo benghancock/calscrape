@@ -34,10 +34,11 @@ command line, so these instructions assume some familiarity with the terminal.
 #. Download and install the `latest version of Python
    <https://www.python.org/downloads/>`__
 #. Download Calscrape in one of two ways:
+
    * If you have ``git`` installed on your machine, you can run ``git clone
      https://github.com/elwha1/calscrape.git`` to clone the repository
-    * Alternatively, you can download the latest release from the **releases**
-      tabe and unzip it into a directory of your choosing
+   * Alternatively, you can download the latest release from the **releases**
+     tab and unzip it into a directory of your choosing  
 #. Move into the directory using the command ``cd <directory-name>``
 #. The simplest way to install the dependencies is to enter the command ``pip
    install -r requirements.txt``. (``pip`` should be installed after you
