@@ -1,16 +1,9 @@
-<<<<<<< HEAD
+beautifulsoup4==4.7.1
 certifi==2018.11.29
 chardet==3.0.4
 idna==2.8
+lxml==4.2.5
 pkg-resources==0.0.0
 requests==2.21.0
-beautifulsoup4==4.6.3
-=======
-beautifulsoup4==4.6.3
-certifi==2018.10.15
-chardet==3.0.4
-idna==2.7
-lxml==4.2.5
-requests==2.20.1
->>>>>>> 520361d62cff9103247805bc83672ae366bcd8c5
+soupsieve==1.7
 urllib3==1.24.1
