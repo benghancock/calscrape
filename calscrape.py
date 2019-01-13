@@ -6,8 +6,7 @@ This is the main module for scraping and returning calendar data.
 """
 
 import argparse
-from modules.calendar_parser import *
-from modules.calendarsconf import *
+from modules.court_select import select_court
 
 VERSION = "2.0-dev"
 SUPPORTED_COURTS = ['cand']
@@ -63,24 +62,23 @@ def print_hearings(hearing_data):
 def main():
     while True:
         args = get_args()
-
-        court_select = args.court
+        court = args.court
         full_mode = args.full
         keyword_mode = args.keyword     # TODO implement keyword search
         silent_mode = args.silent       # TODO implement silent logging
 
-        if court_select not in SUPPORTED_COURTS:
-            print(f"{court_select} is not a supported court")
+        if court not in SUPPORTED_COURTS:
+            print(f"{court} is not a supported court")
             break
 
         else:
-            # TODO Find way to elegantly handle court selection
-            # For now, just test this with the CANDParser()
-            court = CANDParser(base_url=CAND_BASEURL,
-                               calendar_index=CAND_INDEX)
-            hearing_data = court.scrape_calendars()
+            court_parser = select_court(court)
+
+            print("scraping court website ... hang tight")
+            hearing_data = court_parser.scrape_calendars()
 
             if full_mode:
+                print("scrape done")
                 print_hearings(hearing_data)
                 break
 
