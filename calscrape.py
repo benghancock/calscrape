@@ -30,10 +30,10 @@ def get_args():
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('-f', '--full', action='store_true',
                       help='print full scrape results to stdout')
-    mode.add_argument('-k', '--keyword', action='store_true',
-                      help='print results matching keyword')
-    parser.add_argument('--silent',
+    parser.add_argument('--silent', action='store_true',
                         help='run silently and save results to logfile')
+    mode.add_argument('-k', '--keyword', 
+                      help='print results matching keyword')
     parser.set_defaults(full=True)
 
     args = parser.parse_args()
