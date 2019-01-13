@@ -78,7 +78,6 @@ def main():
             hearing_data = court_parser.scrape_calendars()
 
             if full_mode:
-                print("scrape done")
                 print_hearings(hearing_data)
                 break
 
