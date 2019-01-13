@@ -6,7 +6,6 @@ This is the main module for scraping and returning calendar data.
 """
 
 import argparse
-import pprint
 from modules.calendar_parser import *
 from modules.calendarsconf import *
 
@@ -32,7 +31,7 @@ def get_args():
                       help='print full scrape results to stdout')
     parser.add_argument('--silent', action='store_true',
                         help='run silently and save results to logfile')
-    mode.add_argument('-k', '--keyword', 
+    mode.add_argument('-k', '--keyword',
                       help='print results matching keyword')
     parser.set_defaults(full=True)
 
@@ -40,19 +39,24 @@ def get_args():
     return args
 
 
-def read_results(results):
+def print_hearings(hearing_data):
     """Parse list of dicts to cleanly ouput results of search"""
-    for result in results:
-        judge = result.get('judge')
-        date = result.get('date')
+
+    # Sort the results in chronological order
+    ordered_data = sorted(hearing_data,
+                          key=lambda k: k['date'])
+
+    for hearing in ordered_data:
+        judge = hearing.get('judge')
+        date = hearing.get('date')
         formatted_date = date.strftime('%a %b %d %I:%M %p')
-        case = result.get('case')
-        details = result.get('details')
+        case_no = hearing.get('case_no')
+        case_cap = hearing.get('case_cap')
 
         print(f"Judge: {judge}")
         print(f"Date: {formatted_date}")
-        print(f"Case: {case}")
-        print(f"Hearing: {details}")
+        print(f"Case Num: {case_no}")
+        print(f"Hearing: {case_cap}")
         print("\n")
 
 
@@ -74,12 +78,16 @@ def main():
             # For now, just test this with the CANDParser()
             court = CANDParser(base_url=CAND_BASEURL,
                                calendar_index=CAND_INDEX)
-            hearings = court.scrape_calendars()
+            hearing_data = court.scrape_calendars()
 
-            pp = pprint.PrettyPrinter(indent=4)
-            pp.pprint(hearings)
+            if full_mode:
+                print_hearings(hearing_data)
+                break
 
-            break
+            elif keyword_mode:
+                # TODO
+                print("stuff")
+                break
 
 
 if __name__ == "__main__":
