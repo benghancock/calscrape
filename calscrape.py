@@ -6,10 +6,14 @@ This is the main module for scraping and returning calendar data.
 """
 
 import argparse
+import json
+
 from modules.court_select import select_court
 
 VERSION = "2.0-dev"
 SUPPORTED_COURTS = ['cand']
+
+JSON_OUT = "hearings.json"
 
 courts_info = " ".join(SUPPORTED_COURTS)
 version_info = f"version: {VERSION} | supported courts: {courts_info}"
@@ -28,22 +32,21 @@ def get_args():
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('-f', '--full', action='store_true',
                       help='print full scrape results to stdout')
-    parser.add_argument('--silent', action='store_true',
-                        help='run silently and save results to logfile')
+    mode.add_argument('--silent', action='store_true',
+                      help='run silently and save results to logfile')
     mode.add_argument('-k', '--keyword',
                       help='print results matching keyword')
-    parser.set_defaults(full=True)
+
+    # parser.set_defaults(full=True)
 
     args = parser.parse_args()
     return args
 
 
 def print_hearings(hearing_data):
-    """Parse list of dicts to cleanly ouput results of search"""
+    """Parse list of dicts to cleanly output results of search"""
 
-    # Sort the results in chronological order
-    ordered_data = sorted(hearing_data,
-                          key=lambda k: k['date'])
+    ordered_data = sort_hearings_bydate(hearing_data)
 
     for hearing in ordered_data:
         judge = hearing.get('judge')
@@ -59,10 +62,35 @@ def print_hearings(hearing_data):
         print("\n")
 
 
+def reformat_date(hearing_entry):
+    """Format a datetime object, return as string"""
+    date = hearing_entry.get('date')
+    formatted_date = date.strftime('%a %b %d %I:%M %p')
+    hearing_entry['date'] = formatted_date
+
+
+def save_hearings(f_name, hearing_data):
+    """Save list of dicts as JSON file locally"""
+    ordered_data = sort_hearings_bydate(hearing_data)
+
+    for entry in ordered_data:
+        reformat_date(entry)
+
+    with open(f_name, 'w') as f_obj:
+        json.dump(hearing_data, f_obj)
+
+
+def sort_hearings_bydate(hearing_data):
+    """Sort list of dicts by 'date' key"""
+    ordered_data = sorted(hearing_data,
+                          key=lambda k: k['date'])
+    return ordered_data
+
+
 def main():
     while True:
         args = get_args()
-        court = args.court
+        court = args.court.lower()
         full_mode = args.full
         keyword_mode = args.keyword     # TODO implement keyword search
         silent_mode = args.silent       # TODO implement silent logging
@@ -81,9 +109,19 @@ def main():
                 print_hearings(hearing_data)
                 break
 
+            elif silent_mode:
+                # Raises Type Error; datetime objects not friendly with JSON
+                save_hearings(JSON_OUT, hearing_data)
+                print("done.")
+                break
+
             elif keyword_mode:
                 # TODO
                 print("stuff")
+                break
+
+            else:
+                print("Nothing to do.")
                 break
 
 
