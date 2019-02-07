@@ -7,8 +7,10 @@ This is the main module for scraping and returning calendar data.
 
 import argparse
 import json
+import re
 
 from modules.court_select import select_court
+
 
 VERSION = "2.0-dev"
 SUPPORTED_COURTS = ['cand']
@@ -80,6 +82,23 @@ def save_hearings(f_name, hearing_data):
         json.dump(hearing_data, f_obj)
 
 
+def search_hearings(search_term, hearing_data, key):
+    """Return list of dicts where value matches regex search"""
+    matches = []
+
+    for hearing in hearing_data:
+        hearing_info = hearing.get(key)
+        search_match = re.search(search_term, hearing_info, re.I)
+
+        if search_match:
+            matches.append(hearing)
+
+        else:
+            continue
+
+    return matches
+
+
 def sort_hearings_bydate(hearing_data):
     """Sort list of dicts by 'date' key"""
     ordered_data = sorted(hearing_data,
@@ -92,7 +111,7 @@ def main():
         args = get_args()
         court = args.court.lower()
         full_mode = args.full
-        keyword_mode = args.keyword     # TODO implement keyword search
+        keyword = args.keyword     # TODO implement keyword search
         silent_mode = args.silent       # TODO implement silent logging
 
         if court not in SUPPORTED_COURTS:
@@ -110,15 +129,25 @@ def main():
                 break
 
             elif silent_mode:
-                # Raises Type Error; datetime objects not friendly with JSON
                 save_hearings(JSON_OUT, hearing_data)
-                print("done.")
+                print(f"done - saved output to {JSON_OUT}")
                 break
 
-            elif keyword_mode:
-                # TODO
-                print("stuff")
-                break
+            elif keyword:
+                matches = search_hearings(
+                        search_term=keyword,
+                        hearing_data=hearing_data,
+                        key='case_cap')
+
+                if matches:
+                    num_matches = len(matches)
+                    print("found " + str(num_matches) + " matching hearings:")
+                    print_hearings(matches)
+                    break
+
+                else:
+                    print("no matching hearings!")
+                    break
 
             else:
                 print("Nothing to do.")
