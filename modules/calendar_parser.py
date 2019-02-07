@@ -3,6 +3,7 @@ A Python module for scraping and parsing federal judicial calendars
 """
 
 import re
+import time
 from datetime import datetime
 
 import requests
@@ -60,6 +61,7 @@ class CANDParser(CalendarParser):
 
             sub_url = self.base_url + url_ending
             judge_calendar = self.get_lxml(sub_url)
+            time.sleep(.5)  # Slow down the scrape
 
             if judge_calendar:
                 calendar_data = self.parse_hearings(judge_name, judge_calendar)
