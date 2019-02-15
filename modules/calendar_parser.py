@@ -87,6 +87,7 @@ class CANDParser(CalendarParser):
                 court_date = re.search(self.cal_datepat, cell)
                 court_time = re.search(self.cal_timepat, cell)
                 hearing = re.search(self.cal_hearingpat, cell)
+                # TODO Grab hearing details
                 # TODO Parse and grab under seal case captions
 
                 if court_date:
