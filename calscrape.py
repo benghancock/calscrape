@@ -65,7 +65,7 @@ def print_hearings(hearing_data):
 
 
 def reformat_date(hearing_entry):
-    """Format a datetime object, return as string"""
+    """Format a datetime object arg, return nothing"""
     date = hearing_entry.get('date')
     formatted_date = date.strftime('%a %b %d %I:%M %p')
     hearing_entry['date'] = formatted_date
@@ -111,7 +111,7 @@ def main():
         args = get_args()
         court = args.court.lower()
         full_mode = args.full
-        keyword = args.keyword     # TODO implement keyword search
+        keyword = args.keyword
         silent_mode = args.silent       # TODO implement silent logging
 
         if court not in SUPPORTED_COURTS:
