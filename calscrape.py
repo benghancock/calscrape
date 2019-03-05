@@ -17,19 +17,22 @@ SUPPORTED_COURTS = ['cand']
 
 JSON_OUT = "hearings.json"
 
+version_info = f"version: {VERSION}"
 courts_info = " ".join(SUPPORTED_COURTS)
-version_info = f"version: {VERSION} | supported courts: {courts_info}"
+court_support = f"supported court codes are: {courts_info}"
 
 
 def get_args():
     parser = argparse.ArgumentParser(
-                description='Rapidly search judicial calendars')
+            description='Rapidly search judicial calendars',
+            epilog=court_support)
+
     parser.add_argument('--version', action='version',
                         version=f'{version_info}')
 
     # Mode selection
     parser.add_argument('-c', '--court', required=True,
-                        help='court to be scraped')
+                        help='code of court to be scraped')
 
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument('-f', '--full', action='store_true',
