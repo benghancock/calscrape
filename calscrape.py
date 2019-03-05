@@ -59,11 +59,13 @@ def print_hearings(hearing_data):
         formatted_date = date.strftime('%a %b %d %I:%M %p')
         case_no = hearing.get('case_no')
         case_cap = hearing.get('case_cap')
+        hearing_detail = hearing.get('detail')
 
         print(f"Judge: {judge}")
         print(f"Date: {formatted_date}")
         print(f"Case Num: {case_no}")
         print(f"Hearing: {case_cap}")
+        print(f"Detail: {hearing_detail}")
         print("\n")
 
 

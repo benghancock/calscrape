@@ -83,7 +83,9 @@ class CANDParser(CalendarParser):
         # Handle the possibility of an empty calendar
         try:
             # Only get nonempty cells in the table
-            for cell in table.find_all(text=True):
+            table_data = table.find_all(text=True)
+
+            for cell in table_data:
                 court_date = re.search(self.cal_datepat, cell)
                 court_time = re.search(self.cal_timepat, cell)
                 hearing = re.search(self.cal_hearingpat, cell)
@@ -109,10 +111,15 @@ class CANDParser(CalendarParser):
                 if hearing:
                     date_stamp = datetime.combine(hearing_date,
                                                   hearing_time)
+
+                    # Details of hearing are at next index location in list
+                    hearing_detail = table_data[table_data.index(cell) + 1]
+
                     data = {'judge': judge_name,
                             'date': date_stamp,
                             'case_no': hearing.group(1),
-                            'case_cap': hearing.group(2)}
+                            'case_cap': hearing.group(2),
+                            'detail': hearing_detail}
 
                     hearing_data.append(data)
 
