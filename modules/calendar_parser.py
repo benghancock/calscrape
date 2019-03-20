@@ -74,7 +74,7 @@ class CANDParser(CalendarParser):
 
     def parse_hearings(self, judge_name, calendar_soup):
         """Parse all hearing information on a given CAND judge's calendar"""
-        # Start by just testing hearing times
+
         hearing_data = []
 
         # Calendar is organized as a table, get table rows ('tr')
