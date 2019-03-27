@@ -2,193 +2,161 @@
 
 """CalScrape - A tool for rapidly searching judicial calendars
 
-This is the main script for scraping and returning calendar data.
+This is the main module for scraping and returning calendar data.
 """
 
+import argparse
 import json
+import re
 
-from modules.spatula import Spatula
-from modules.calparse import ParsedCal
-
-VERSION = "1.0"
-SUPPORTED_CALENDARS = ['cand']
+from modules.court_select import select_court
 
 
-def greet_user(version, supported):
-    """Greet the user and provide basic info about the program"""
-    greeting = "\nCalScrape: Rapidly search judicial calendars"
-    version_line = f"version {version}"
+VERSION = "2.0-dev"
+SUPPORTED_COURTS = ['cand']
 
-    print(greeting)
-    print(version_line)
+JSON_OUT = "hearings.json"
 
-    print("\nThe following courts are currently supported:")
-
-    for court in supported:
-        print("- " + court.upper())
+version_info = f"version: {VERSION}"
+courts_info = " ".join(SUPPORTED_COURTS)
+court_support = f"supported court codes are: {courts_info}"
 
 
-def prompt_user():
-    """Prompt the user and check for supported calendars
+def get_args():
+    parser = argparse.ArgumentParser(
+            description='Rapidly search judicial calendars',
+            epilog=court_support)
 
-    Expects list as arg
-    """
-    print("\nEnter the code of the court to be searched:")
+    parser.add_argument('--version', action='version',
+                        version=f'{version_info}')
 
-    while True:
+    # Mode selection
+    parser.add_argument('-c', '--court', required=True,
+                        help='code of court to be scraped')
 
-        selection = input("\nSelection >> ").lower()
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('-f', '--full', action='store_true',
+                      help='print full scrape results to stdout')
+    mode.add_argument('--silent', action='store_true',
+                      help='run silently and save results to logfile')
+    mode.add_argument('-k', '--keyword',
+                      help='print results matching keyword')
 
-        if selection == "q":
-            return None
+    # parser.set_defaults(full=True)
 
-        elif selection in SUPPORTED_CALENDARS:
-            return selection
-
-        else:
-            print("Not a valid selection.")
-
-
-def pick_mode():
-    """Prompts for list-based or single keyword search mode"""
-    prompt = "\nPlease pick a search mode."
-    prompt += "\nEnter \"keyword\" for a single keyword search,"
-    prompt += "\nor enter \"list\" for a list-based search."
-    print(prompt)
-
-    prompting = True
-    mode = None
-
-    while prompting:
-
-        mode = input("\nMode >> ")
-
-        if mode == "keyword":
-            prompting = False
-
-        elif mode == "list":
-            prompting = False
-
-        else:
-            print("Not a valid mode selection.")
-
-    return mode
+    args = parser.parse_args()
+    return args
 
 
-def load_calfile():
-    """Load the calendars JSON file"""
-    selection = prompt_user()
+def print_hearings(hearing_data):
+    """Parse list of dicts to cleanly output results of search"""
 
-    try:
-        with open(f"data/{selection}-urls.json") as cal_f:
-            calendars = json.load(cal_f)
+    ordered_data = sort_hearings_bydate(hearing_data)
 
-        return calendars
-
-    except FileNotFoundError as err:
-        print("No calendar file found for that court")
-        print(f"Error: {err}")
-
-
-def load_searchfile():
-    """Load the search keys file in list mode"""
-    searchterms = None
-
-    try:
-        with open("user/searchterms.json") as search_f:
-            searchterms = json.load(search_f)
-
-        return searchterms
-
-    except FileNotFoundError as err:
-        print("Could not find search term list file.")
-        print(f"Error: {err}")
-
-        return searchterms
-
-
-def read_results(results):
-    """Parse list of dicts to cleanly ouput results of search"""
-    for result in results:
-        judge = result.get('judge')
-        date = result.get('date')
+    for hearing in ordered_data:
+        judge = hearing.get('judge')
+        date = hearing.get('date')
         formatted_date = date.strftime('%a %b %d %I:%M %p')
-        case = result.get('case')
-        details = result.get('details')
+        case_no = hearing.get('case_no')
+        case_cap = hearing.get('case_cap')
+        hearing_detail = hearing.get('detail')
 
         print(f"Judge: {judge}")
         print(f"Date: {formatted_date}")
-        print(f"Case: {case}")
-        print(f"Hearing: {details}")
+        print(f"Case Num: {case_no}")
+        print(f"Hearing: {case_cap}")
+        print(f"Detail: {hearing_detail}")
         print("\n")
 
 
-def main():
-    """Print neatly formatted results of calendar search"""
-    greet_user(version=VERSION, supported=SUPPORTED_CALENDARS)
+def reformat_date(hearing_entry):
+    """Format a datetime object arg, return nothing"""
+    date = hearing_entry.get('date')
+    formatted_date = date.strftime('%a %b %d %I:%M %p')
+    hearing_entry['date'] = formatted_date
 
-    while True:
 
-        calfile = load_calfile()
+def save_hearings(f_name, hearing_data):
+    """Save list of dicts as JSON file locally"""
+    ordered_data = sort_hearings_bydate(hearing_data)
 
-        if calfile is None:
-            return
+    for entry in ordered_data:
+        reformat_date(entry)
 
-        mode = pick_mode()
-        results = []
+    with open(f_name, 'w') as f_obj:
+        json.dump(hearing_data, f_obj)
 
-        if mode == "keyword":
-            searchterm = input("\nKeyword: ")
 
-            print("Searching ...")
+def search_hearings(search_term, hearing_data, key):
+    """Return list of dicts where value matches regex search"""
+    matches = []
 
-            for judge, url in calfile.items():
-                page = Spatula(url)
-                page.scrape()
-                raw = page.serve_cand()
+    for hearing in hearing_data:
+        hearing_info = hearing.get(key)
+        search_match = re.search(search_term, hearing_info, re.I)
 
-                cal = ParsedCal(raw)
-                matches = cal.cand_search(searchterm, judge)
-
-                # cand_search returns an empty list if there are no matches
-                results.extend(matches)
-
-        elif mode == "list":
-            searchterms = load_searchfile()
-
-            if searchterms is None:
-                return
-
-            else:
-
-                print("Searching for the following terms...")
-                for searchterm in searchterms:
-                    print(searchterm, end=" ")
-
-                print("\n")
-
-                for judge, url in calfile.items():
-                    page = Spatula(url)
-                    page.scrape()
-                    raw = page.serve_cand()
-
-                    cal = ParsedCal(raw)
-
-                    for searchterm in searchterms:
-                        matches = cal.cand_search(searchterm,
-                                                  judge)
-
-                        results.extend(matches)
-
-        if not results:
-            print("No matches")
+        if search_match:
+            matches.append(hearing)
 
         else:
-            results_ordered = sorted(results,
-                                     key=lambda k: k['date'])
-            read_results(results_ordered)
+            continue
 
-        return
+    return matches
+
+
+def sort_hearings_bydate(hearing_data):
+    """Sort list of dicts by 'date' key"""
+    ordered_data = sorted(hearing_data,
+                          key=lambda k: k['date'])
+    return ordered_data
+
+
+def main():
+    while True:
+        args = get_args()
+        court = args.court.lower()
+        full_mode = args.full
+        keyword = args.keyword
+        silent_mode = args.silent       # TODO implement silent logging
+
+        if court not in SUPPORTED_COURTS:
+            print(f"{court} is not a supported court")
+            break
+
+        else:
+            court_parser = select_court(court)
+
+            print("scraping court website ... hang tight")
+            hearing_data = court_parser.scrape_calendars()
+
+            if full_mode:
+                print_hearings(hearing_data)
+                break
+
+            elif silent_mode:
+                save_hearings(JSON_OUT, hearing_data)
+                print(f"done - saved output to {JSON_OUT}")
+                break
+
+            elif keyword:
+                matches = search_hearings(
+                        search_term=keyword,
+                        hearing_data=hearing_data,
+                        key='case_cap')
+
+                if matches:
+                    num_matches = len(matches)
+                    print("found " + str(num_matches) + " matching hearings:")
+                    print_hearings(matches)
+                    break
+
+                else:
+                    print("no matching hearings!")
+                    break
+
+            else:
+                print("Nothing to do.")
+                break
 
 
 if __name__ == "__main__":
