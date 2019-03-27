@@ -46,24 +46,30 @@ command line, so these instructions assume some familiarity with the terminal.
 
 Running CalScrape
 =================
-Once in the correct directory, CalScrape can be run via this terminal command:
+**New as of v2.0.0**
+Prior versions of CalScrape were run from the command line in an interactive
+mode, but as of v2.0.0 the program is now run using *command line arguments*. Once
+in the correct directory, enter the command below to see the help menu and the
+various options:
 
 ::
 
-    $ python calscrape.py
+    $ python calscrape.py --help
 
 You may need to substitute ``python`` for ``python3``, depending on your
 installation.
 
-CalScrape supports two search modes: ``keyword`` and ``list``.  The ``list``
-mode searches the calendars for all terms stored in the file
-``user/searchterms.json``. Feel free to edit this file to include as many terms
-as you want (company names, party names, etc.). Just be cautious to format the
-list correctly:
+The help menu options should explain how to run CalScrape in its
+various modes. Generally, the options are to run in ``full`` mode, which scrapes
+all hearings from the court and prints them to the terminal window; ``silent``
+mode, which does the same as the prior option but saves the data as a JSON file
+in the directory (note that this file is overwritten with each scrape); and
+``keyword`` mode, which searches the hearings for the given keyword and prints
+those hearings that match to the terminal, in chronological order.
 
-::
-
-    ["list", "the", "terms", "like", "this"]
+You may notice that scraping the calendar takes longer than in prior versions.
+This is because ``sleep`` times have been built in between each scrape in order
+not to cause unduly heavy traffic on court servers.
 
 Contributing
 ============
