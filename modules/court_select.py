@@ -2,16 +2,19 @@
 Select the correct parser for a given court
 """
 
+import configparser
 import modules.calendar_parser as calparse
-import modules.calendarsconf as calconf
 
 
 def select_court(court_code):
     """Returns CalendarParser object"""
 
+    config = configparser.ConfigParser()
+    config.read('calendars_conf.ini')
+
     if court_code == 'cand':
-        parser = calparse.CANDParser(calconf.CAND_BASEURL,
-                                     calconf.CAND_INDEX)
+        parser = calparse.CANDParser(config['CAND']['CAND_BASEURL'],
+                                     config['CAND']['CAND_INDEX'])
         return parser
 
     else:
