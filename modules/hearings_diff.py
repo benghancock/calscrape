@@ -4,6 +4,20 @@
 Create Hearings class and associated methods
 """
 
+def restructure_hearing_data(data, key_name):
+    """
+    Transform list of hearing data to dict of lists, by 'key_name'
+    """
+    dict_data = {}
+
+    for entry in data:
+        key_val = entry.pop(key_name)
+        dict_data[key_val] = []
+        dict_data[key_val].append(entry)
+
+    return dict_data
+
+
 class Hearings():
     """
     Model court hearings and introduce methods to detect
@@ -16,12 +30,6 @@ class Hearings():
         self.latest_scrape = latest_scrape
         self.prior_scrape = prior_scrape
 
-    def restructure_hearing_data(self):
-        """
-        Transform list of hearing data to dict of lists
-        This makes it easier to compare
-        """
-        # TODO
 
     def check_for_new(self):
         """
