@@ -25,6 +25,13 @@ class TestHearingsFunctions(unittest.TestCase):
        self.assertEqual(restruct_data.get('3:18-cv-04888-WHA')[0].get('judge'),
                         "Alsup, William H. [WHA]")
 
+    def test_hearings_same(self):
+        dict1 = {'name': 'Zero Cool', 'city': 'Seattle'}
+        dict2 = {'name': 'Zero Cool', 'city': 'Seattle'}
+        dict3 = {'name': 'Zero Cool', 'city': 'New York'}
+        self.assertTrue(hd.hearings_same(dict1, dict2, keys=['name', 'city']))
+        self.assertFalse(hd.hearings_same(dict1, dict3, keys=['name', 'city']))
+
 
 if __name__ == '__main__':
     unittest.main()
