@@ -17,6 +17,25 @@ def restructure_hearing_data(data, key_name):
 
     return dict_data
 
+def hearings_same(data_1, data_2, keys):
+    """
+    Compare two dictionaries with hearing data
+    If different, return False; else return True
+
+    :keys: list of keys to compare
+    """
+    for key in keys:
+        data_1_val = data_1.get(key)
+        data_2_val = data_2.get(key)
+
+        if data_1_val != data_2_val:
+            return False
+
+        else:
+            continue
+
+    return True
+
 
 class Hearings():
     """
