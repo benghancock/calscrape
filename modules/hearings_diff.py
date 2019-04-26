@@ -50,12 +50,39 @@ class Hearings():
         self.prior_scrape = prior_scrape
 
 
-    def check_for_new(self):
+    def check_for_new(self, keys):
         """
         Compare the data from the latest scrape against the prior
         scrape to determine which hearings are new
         """
-        # TODO
+        new_hearings = []
+
+        # Loop through every item in the latest scrape
+        # and check for its existence in the prior scrape
+        # TODO Check the current date and handle hearings that have passed
+        # TODO Add the case number back into the hearing data before returning
+
+        for case_num in self.latest_scrape.keys():
+            now_hearings = self.latest_scrape.get(case_num)
+            before_hearings = self.prior_scrape.get(case_num)
+
+            if not before_hearings:
+                # If case number wasn't previously present
+                # then all hearings with that case number are new
+                # UNLESS the hearing date has already passed
+
+                for now_hearing in now_hearings:
+                    new_hearings.append(now_hearing)
+
+            else:
+                for now_hearing in now_hearings:
+                    for before_hearing in before_hearings:
+                        if hearings_same(now_hearing, before_hearing, keys):
+                            continue
+                        else:
+                            new_hearings.append(now_hearing)
+
+        return new_hearings
 
     def check_status(self):
         """
