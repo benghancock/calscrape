@@ -11,11 +11,18 @@ def restructure_hearing_data(data, key_name):
     dict_data = {}
 
     for entry in data:
-        key_val = entry.pop(key_name)
-        dict_data[key_val] = []
-        dict_data[key_val].append(entry)
+        key_val = entry.get(key_name)
+
+        # Don't overwrite if it's already been added
+        if dict_data.get(key_val):
+            dict_data[key_val].append(entry)
+
+        else:
+            dict_data[key_val] = []
+            dict_data[key_val].append(entry)
 
     return dict_data
+
 
 def hearings_same(data_1, data_2, keys):
     """
