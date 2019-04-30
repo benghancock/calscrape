@@ -43,6 +43,29 @@ def hearings_same(data_1, data_2, keys):
 
     return True
 
+def compare_times(t1, t2):
+    """
+    Compare two times given in string format
+
+    Datetimes must be in format '%a %b %d %I:%M %p'
+    (i.e. "Tue Apr 23 02:00 PM")
+
+    Parameters
+    ----------
+    t1 : string, datetime in specified format
+    t2 : string, datetime in specified format
+
+    Returns
+    -------
+    timediff : difference as type datetime.timedelta
+
+    """
+    t1 = datetime.strptime(t1, '%a %b %d %I:%M %p')
+    t2 = datetime.strptime(t2, '%a %b %d %I:%M %p')
+
+    timediff = t1 - t2
+    return timediff
+
 
 class Hearings():
     """
