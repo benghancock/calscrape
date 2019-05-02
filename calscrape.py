@@ -56,7 +56,7 @@ def print_hearings(hearing_data):
     for hearing in ordered_data:
         judge = hearing.get('judge')
         date = hearing.get('date')
-        formatted_date = date.strftime('%a %b %d %I:%M %p')
+        formatted_date = reformat_date(date)
         case_no = hearing.get('case_no')
         case_cap = hearing.get('case_cap')
         hearing_detail = hearing.get('detail')
@@ -72,7 +72,7 @@ def print_hearings(hearing_data):
 def reformat_date(hearing_entry):
     """Format a datetime object arg, return nothing"""
     date = hearing_entry.get('date')
-    formatted_date = date.strftime('%a %b %d %I:%M %p')
+    formatted_date = date.strftime('%a %b %d %Y %I:%M %p')
     hearing_entry['date'] = formatted_date
 
 
