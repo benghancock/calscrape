@@ -4,6 +4,9 @@
 Create Hearings class and associated methods
 """
 
+from datetime import datetime
+
+
 def restructure_hearing_data(data, key_name):
     """
     Transform list of hearing data to dict of lists, by 'key_name'
@@ -43,28 +46,26 @@ def hearings_same(data_1, data_2, keys):
 
     return True
 
-def compare_times(t1, t2):
-    """
-    Compare two times given in string format
+def time_past(timestamp):
+    """Evaluate timestamp and return whether time is in the past
 
-    Datetimes must be in format '%a %b %d %I:%M %p'
-    (i.e. "Tue Apr 23 02:00 PM")
+    ``timestamp`` must be in format '%a %b %d %Y %I:%M %p'
+    (i.e. "Tue Apr 23 2019 02:00 PM")
+    # TODO Change format
 
-    Parameters
-    ----------
-    t1 : string, datetime in specified format
-    t2 : string, datetime in specified format
+    :param timestamp: datetime in specified format
+    :type timestamp: str
 
-    Returns
-    -------
-    timediff : difference as type datetime.timedelta
+    :returns: whether timestamp is in the past
+    :rtype: bool
 
     """
-    t1 = datetime.strptime(t1, '%a %b %d %I:%M %p')
-    t2 = datetime.strptime(t2, '%a %b %d %I:%M %p')
 
-    timediff = t1 - t2
-    return timediff
+    timestamp = datetime.strptime(timestamp, '%a %b %d %Y %I:%M %p')
+    now = datetime.now()
+
+    time_past = now > timestamp
+    return time_past
 
 
 class Hearings():

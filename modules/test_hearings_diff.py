@@ -16,7 +16,6 @@ TEST_HEARINGS_DATA = [{"judge": "Alsup, William H. [WHA]",
                        "detail": "Discovery Hearing"}]
 
 
-
 class TestHearingsFunctions(unittest.TestCase):
 
     def test_restruct_hearings(self):
@@ -25,12 +24,21 @@ class TestHearingsFunctions(unittest.TestCase):
        self.assertEqual(restruct_data.get('3:18-cv-04888-WHA')[0].get('judge'),
                         "Alsup, William H. [WHA]")
 
+
     def test_hearings_same(self):
         dict1 = {'name': 'Zero Cool', 'city': 'Seattle'}
         dict2 = {'name': 'Zero Cool', 'city': 'Seattle'}
         dict3 = {'name': 'Zero Cool', 'city': 'New York'}
         self.assertTrue(hd.hearings_same(dict1, dict2, keys=['name', 'city']))
         self.assertFalse(hd.hearings_same(dict1, dict3, keys=['name', 'city']))
+
+
+    def test_time_past(self):
+        t1 = "Tue Apr 23 2019 02:00 PM"
+        t2 = "Fri Mar 17 2030 08:00 AM"
+
+        self.assertTrue(hd.time_past(t1))
+        self.assertFalse(hd.time_past(t2))
 
 
 if __name__ == '__main__':
