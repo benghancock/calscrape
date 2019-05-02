@@ -15,7 +15,7 @@ class TestFormattingFuncs(unittest.TestCase):
                            'date': datetime(2019, 2, 14, 8, 0),
                            'case_no': '3:18-cv-06113-WHA', 
                            'case_cap': 'Howard Clark, et al  v. The Hershey Company'} 
-        example_date_string = "Thu Feb 14 08:00 AM"
+        example_date_string = "Thu Feb 14 2019 08:00 AM"
 
         calscrape.reformat_date(example_hearing)
         reformatted_date = example_hearing.get('date')
