@@ -1,0 +1,26 @@
+[
+    {"judge": "Alsup, William H. [WHA]",
+     "date": "Wed May 06 2019 02:00 PM",
+     "case_no": "3:13-cr-00612-WHA",
+     "case_cap": "USA v. Robert Manning",
+     "detail": "Status Conference re SRV/PRBV"},
+
+    {"judge": "Alsup, William H. [WHA]",
+     "date": "Fri Aug 17 2019 02:00 PM",
+     "case_no": "3:14-cr-00241-WHA",
+     "case_cap": "USA v. Octavio Reyes",
+     "detail": "Status Conference re SRV/PRBV"},
+
+    {"judge": "Alsup, William H. [WHA]",
+     "date": "Tue Sep 23 2019 23 02:00 PM",
+     "case_no": "3:13-cr-00612-WHA",
+     "case_cap": "USA v. Robert Manning",
+     "detail": "Motion to Dismiss"},
+
+    {"judge": "Alsup, William H. [WHA]",
+     "date": "Mon Oct 12 2019 08:00 AM",
+     "case_no": "3:13-cr-00612-WHA",
+     "case_cap": "USA v. Robert Manning",
+     "detail": "Motion for Summary Judgement"}
+
+]
