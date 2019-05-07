@@ -96,10 +96,10 @@ class Hearings():
             now_hearings = self.latest_scrape.get(case_num)
             before_hearings = self.prior_scrape.get(case_num)
 
+            # if case number wasn't previously present
+            # then all hearings with that case number are new
+            # unless the hearing date has already passed
             if not before_hearings:
-                # If case number wasn't previously present
-                # then all hearings with that case number are new
-                # UNLESS the hearing date has already passed
 
                 for now_hearing in now_hearings:
                     new_hearings.append(now_hearing)
