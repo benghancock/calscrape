@@ -6,6 +6,7 @@
 Test functions in the hearings_diff module
 """
 
+import json
 import unittest
 import hearings_diff as hd
 
@@ -17,6 +18,18 @@ TEST_HEARINGS_DATA = [{"judge": "Alsup, William H. [WHA]",
 
 
 class TestHearingsFunctions(unittest.TestCase):
+
+    def setUp(self):
+        # Bring in sample data to test hearing checkers
+        before_data_file = 'test_hearings_before.json'
+        now_data_file = 'test_hearings_now.json'
+
+        with open(before_data_file) as bd_obj:
+            self.before_data = json.load(bd_obj)
+
+        with open(now_data_file) as nd_obj:
+            self.now_data = json.load(nd_obj)
+
 
     def test_restruct_hearings(self):
        restruct_data = hd.restructure_hearing_data(TEST_HEARINGS_DATA, key_name='case_no')
@@ -39,6 +52,9 @@ class TestHearingsFunctions(unittest.TestCase):
 
         self.assertTrue(hd.time_past(t1))
         self.assertFalse(hd.time_past(t2))
+
+
+    def test_check_for_new(self):
 
 
 if __name__ == '__main__':
