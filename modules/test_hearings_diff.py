@@ -24,17 +24,23 @@ class TestHearingsFunctions(unittest.TestCase):
         before_data_file = 'test_hearings_before.json'
         now_data_file = 'test_hearings_now.json'
 
-        with open(before_data_file) as bd_obj:
-            self.before_data = json.load(bd_obj)
+        with open(before_data_file) as before_data_obj:
+            before_data = json.load(before_data_obj)
+            self.restruct_bef= hd.restructure_hearing_data(before_data,
+                                                           key_name='case_no')
 
-        with open(now_data_file) as nd_obj:
-            self.now_data = json.load(nd_obj)
+        with open(now_data_file) as now_data_obj:
+            now_data = json.load(now_data_obj)
+            self.restruct_now = hd.restructure_hearing_data(now_data,
+                                                            key_name='case_no')
+
 
 
     def test_restruct_hearings(self):
-       restruct_data = hd.restructure_hearing_data(TEST_HEARINGS_DATA, key_name='case_no')
-       self.assertEqual(list(restruct_data.keys())[0], "3:18-cv-04888-WHA")
-       self.assertEqual(restruct_data.get('3:18-cv-04888-WHA')[0].get('judge'),
+        # TODO Update with newer data sample including year timestamp
+        restruct_data = hd.restructure_hearing_data(TEST_HEARINGS_DATA, key_name='case_no')
+        self.assertEqual(list(restruct_data.keys())[0], "3:18-cv-04888-WHA")
+        self.assertEqual(restruct_data.get('3:18-cv-04888-WHA')[0].get('judge'),
                         "Alsup, William H. [WHA]")
 
 
@@ -55,6 +61,19 @@ class TestHearingsFunctions(unittest.TestCase):
 
 
     def test_check_for_new(self):
+        hearings = hd.Hearings(latest_scrape=self.restruct_now,
+                               prior_scrape=self.restruct_bef)
+
+        new_hearings = hearings.check_for_new(keys=['judge',
+                                                    'date',
+                                                    'case_cap',
+                                                    'detail'])
+
+        new_caps = [hearing.get('case_cap') for hearing in new_hearings]
+        self.assertTrue(len(new_hearings) == 2)
+        self.assertTrue('Made Up v. Totally Real' in new_caps)
+        self.assertTrue('Phone Phreaks v. Phake Accounts' in new_caps)
+        self.assertFalse('Green v. Mercy Housing, Inc. et al' in new_caps)
 
 
 if __name__ == '__main__':
