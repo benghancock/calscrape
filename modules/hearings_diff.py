@@ -90,7 +90,6 @@ class Hearings():
 
         # Loop through every item in the latest scrape
         # and check for its existence in the prior scrape
-        # TODO Check the current date and handle hearings that have passed
 
         for case_num in self.latest_scrape.keys():
             now_hearings = self.latest_scrape.get(case_num)
