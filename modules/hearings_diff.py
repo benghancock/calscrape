@@ -46,6 +46,7 @@ def hearings_same(data_1, data_2, keys):
 
     return True
 
+
 def time_past(timestamp):
     """Evaluate timestamp and return whether time is in the past
 
@@ -80,7 +81,6 @@ class Hearings():
         self.latest_scrape = latest_scrape
         self.prior_scrape = prior_scrape
 
-
     def check_for_new(self, keys):
         """
         Compare the data from the latest scrape against the prior
@@ -113,10 +113,34 @@ class Hearings():
 
         return new_hearings
 
-    def check_status(self):
+    def check_status(self, keys):
         """
         Check prior scrape against latest scrape to see whether
         a hearing has gone off calendar or has been changed
         """
 
-        # TODO
+        canceled_hearings = []
+
+        for case_num in self.prior_scrape.keys():
+            before_hearings = self.prior_scrape.get(case_num)
+            now_hearings = self.latest_scrape.get(case_num)
+
+            # Has the date past?
+            for before_hearing in before_hearings:
+                hearing_date = before_hearing.get('date')
+
+                # If the date is in the past, do nothing
+                if time_past(hearing_date):
+                    continue
+
+                else:
+                    # If no matching case numbers, hearing is canceled
+                    if not now_hearings:
+                        canceled_hearings.append(before_hearing)
+
+                    else:
+                        for now_hearing in now_hearings:
+                            if hearings_same(before_hearing, now_hearing, keys):
+                                continue
+                            else:
+                                canceled_hearings.append(before_hearing)
