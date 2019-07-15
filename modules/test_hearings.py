@@ -55,7 +55,7 @@ class TestHearingsFunctions(unittest.TestCase):
         self.assertFalse(hrng.time_past(t2))
 
     # def test_check_for_new(self):
-    #     hearings = hrng.Hearings(latest_scrape=self.restruct_now,
+    #     hearings = hd.Hearings(latest_scrape=self.restruct_now,
     #                            prior_scrape=self.restruct_bef)
 
     #     new_hearings = hearings.check_for_new(keys=['judge',
