@@ -5,3 +5,5 @@ pyvenv.cfg
 share/
 __pycache__/
 *.swp
+*~
+
