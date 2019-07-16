@@ -1,4 +1,4 @@
-# hearings_diff.py
+# hearings.py
 
 """
 Create Hearings class and associated methods
