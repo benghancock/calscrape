@@ -29,12 +29,12 @@ class CalendarParser():
         self.cal_timepat = r'\d+:\d+\w+(AM|PM)'
         self.cal_hearingpat = r'^(\d:\d\d-[a-zA-Z]+-\d+-[a-zA-Z]+)\s-\s(.*)$'
 
-    def get_lxml(self, url):
-        """Return a BeautifulSoup object for a given calendar URL using LXML"""
-        page = requests.get(url)
-        soup = BeautifulSoup(page.text, 'lxml')
+    # def get_lxml(self, url):
+    #     """Return a BeautifulSoup object for a given calendar URL using LXML"""
+    #     page = requests.get(url)
+    #     soup = BeautifulSoup(page.text, 'lxml')
 
-        return soup
+    #     return soup
 
 
 class CANDParser(CalendarParser):
@@ -47,85 +47,107 @@ class CANDParser(CalendarParser):
         """
         super().__init__(base_url, calendar_index)
 
-    def scrape_calendars(self):
-        """Dynamically scrape the calendars listed at the index URL"""
-        calendars = []
-        soup = self.get_lxml(self.calendar_index)
+    
+    def grab_calendars_listing(self):
+        """Return the scraped calendar index page"""
+        index_page = requests.get(calendar_index)
+        return index_page.text
+    
+        
+    def parse_calendars_listing(self, index_page):
+        """Return a dict of calendar URLs from the index page
+
+        Expects index page as text
+        """
+        judge_calendars = {}
 
         # Index page is organized as a table, get table rows ('tr')
+        soup = BeautifulSoup(index_page, 'lxml')
         rows = soup.find_all('tr')
 
         for row in rows:
             judge_name = row.th.a.text.strip()
             url_ending = row.th.a['href'].strip()
+            calendar_url = self.base_url + url_ending
 
-            sub_url = self.base_url + url_ending
-            judge_calendar = self.get_lxml(sub_url)
-            time.sleep(.5)  # Slow down the scrape
+            judge_calendars[judge_name] = calendar_url
 
-            if judge_calendar:
-                calendar_data = self.parse_hearings(judge_name, judge_calendar)
-                calendars.extend(calendar_data)
+        return judge_calendars
+    
 
-            else:
-                continue
+    # def scrape_calendars(self):
+    #     """Dynamically scrape the calendars listed at the index URL"""
+    #     calendars = []
+        
 
-        return calendars
 
-    def parse_hearings(self, judge_name, calendar_soup):
-        """Parse all hearing information on a given CAND judge's calendar"""
+    #         judge_calendar = self.get_lxml(sub_url)
+    #         time.sleep(.5)  # Slow down the scrape
 
-        hearing_data = []
+    #         if judge_calendar:
+    #             calendar_data = self.parse_hearings(judge_name, judge_calendar)
+    #             calendars.extend(calendar_data)
 
-        # Calendar is organized as a table, get table rows ('tr')
-        table = calendar_soup.find('table', attrs={'class': 'Calendar'})
+    #         else:
+    #             continue
 
-        # Handle the possibility of an empty calendar
-        try:
-            # Only get nonempty cells in the table
-            table_data = table.find_all(text=True)
+    #     return calendars
 
-            for cell in table_data:
-                court_date = re.search(self.cal_datepat, cell)
-                court_time = re.search(self.cal_timepat, cell)
-                hearing = re.search(self.cal_hearingpat, cell)
-                # TODO Parse and grab under seal case captions
+    
+    # def parse_hearings(self, judge_name, calendar_soup):
+    #     """Parse all hearing information on a given CAND judge's calendar"""
 
-                if court_date:
-                    try:
-                        hearing_date = datetime.strptime(
-                                court_date.group(), self.date_format
-                                ).date()
+    #     hearing_data = []
 
-                    except ValueError:
-                        pass
+    #     # Calendar is organized as a table, get table rows ('tr')
+    #     table = calendar_soup.find('table', attrs={'class': 'Calendar'})
 
-                if court_time:
-                    try:
-                        hearing_time = datetime.strptime(
-                                court_time.group(), self.time_format).time()
-                    except ValueError:
-                        pass
+    #     # Handle the possibility of an empty calendar
+    #     try:
+    #         # Only get nonempty cells in the table
+    #         table_data = table.find_all(text=True)
 
-                if hearing:
-                    date_stamp = datetime.combine(hearing_date,
-                                                  hearing_time)
+    #         for cell in table_data:
+    #             court_date = re.search(self.cal_datepat, cell)
+    #             court_time = re.search(self.cal_timepat, cell)
+    #             hearing = re.search(self.cal_hearingpat, cell)
+    #             # TODO Parse and grab under seal case captions
 
-                    # Details of hearing are at next index location in list
-                    hearing_detail = table_data[table_data.index(cell) + 1]
+    #             if court_date:
+    #                 try:
+    #                     hearing_date = datetime.strptime(
+    #                             court_date.group(), self.date_format
+    #                             ).date()
 
-                    data = {'judge': judge_name,
-                            'date': date_stamp,
-                            'case_no': hearing.group(1),
-                            'case_cap': hearing.group(2),
-                            'detail': hearing_detail}
+    #                 except ValueError:
+    #                     pass
 
-                    hearing_data.append(data)
+    #             if court_time:
+    #                 try:
+    #                     hearing_time = datetime.strptime(
+    #                             court_time.group(), self.time_format).time()
+    #                 except ValueError:
+    #                     pass
 
-                else:
-                    continue
+    #             if hearing:
+    #                 date_stamp = datetime.combine(hearing_date,
+    #                                               hearing_time)
 
-        except AttributeError:
-            pass
+    #                 # Details of hearing are at next index location in list
+    #                 hearing_detail = table_data[table_data.index(cell) + 1]
 
-        return hearing_data
+    #                 data = {'judge': judge_name,
+    #                         'date': date_stamp,
+    #                         'case_no': hearing.group(1),
+    #                         'case_cap': hearing.group(2),
+    #                         'detail': hearing_detail}
+
+    #                 hearing_data.append(data)
+
+    #             else:
+    #                 continue
+
+    #     except AttributeError:
+    #         pass
+
+    #     return hearing_data
