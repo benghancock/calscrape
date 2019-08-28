@@ -70,25 +70,24 @@ class CANDParser(CalendarParser):
 
             calendar_urls[judge_name] = calendar_url
 
-    # def scrape_calendars(self):
-    #     """Dynamically scrape the calendars listed at the index URL"""
-    #     calendars = []
-        
+        return calendar_urls
+
+    def scrape_calendars(self, calendar_urls):
+        """
+        Takes a dict of judge names and URLs
+        returns a dict of requests 'Response' objects
+        """
+        calendars = {}
+
+        for judge, url in calendar_urls.items():
+            r = requests.get(url)
+            time.sleep(.5)   # Slow down the scrape
+
+            calendars[judge] = r
+
+        return calendars
 
 
-    #         judge_calendar = self.get_lxml(sub_url)
-    #         time.sleep(.5)  # Slow down the scrape
-
-    #         if judge_calendar:
-    #             calendar_data = self.parse_hearings(judge_name, judge_calendar)
-    #             calendars.extend(calendar_data)
-
-    #         else:
-    #             continue
-
-    #     return calendars
-
-    
     # def parse_hearings(self, judge_name, calendar_soup):
     #     """Parse all hearing information on a given CAND judge's calendar"""
 
