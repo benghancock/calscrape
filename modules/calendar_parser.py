@@ -47,13 +47,11 @@ class CANDParser(CalendarParser):
         """
         super().__init__(base_url, calendar_index)
 
-    
     def grab_calendars_listing(self):
         """Return the scraped calendar index page"""
-        index_page = requests.get(calendar_index)
+        index_page = requests.get(self.calendar_index)
         return index_page.text
-    
-        
+
     def parse_calendars_listing(self, index_page):
         """Return a dict of calendar URLs from the index page
 
