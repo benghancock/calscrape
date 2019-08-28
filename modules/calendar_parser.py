@@ -57,7 +57,7 @@ class CANDParser(CalendarParser):
 
         Expects index page as text
         """
-        judge_calendars = {}
+        calendar_urls = {}
 
         # Index page is organized as a table, get table rows ('tr')
         soup = BeautifulSoup(index_page, 'lxml')
@@ -68,10 +68,7 @@ class CANDParser(CalendarParser):
             url_ending = row.th.a['href'].strip()
             calendar_url = self.base_url + url_ending
 
-            judge_calendars[judge_name] = calendar_url
-
-        return judge_calendars
-    
+            calendar_urls[judge_name] = calendar_url
 
     # def scrape_calendars(self):
     #     """Dynamically scrape the calendars listed at the index URL"""
