@@ -88,60 +88,60 @@ class CANDParser(CalendarParser):
         return calendars
 
 
-    # def parse_hearings(self, judge_name, calendar_soup):
-    #     """Parse all hearing information on a given CAND judge's calendar"""
+    def parse_hearings(self, judge_name, calendar_soup):
+        """Parse all hearing information on a given CAND judge's calendar"""
 
-    #     hearing_data = []
+        hearing_data = []
 
-    #     # Calendar is organized as a table, get table rows ('tr')
-    #     table = calendar_soup.find('table', attrs={'class': 'Calendar'})
+        # Calendar is organized as a table, get table rows ('tr')
+        table = calendar_soup.find('table', attrs={'class': 'Calendar'})
 
-    #     # Handle the possibility of an empty calendar
-    #     try:
-    #         # Only get nonempty cells in the table
-    #         table_data = table.find_all(text=True)
+        # Handle the possibility of an empty calendar
+        try:
+            # Only get nonempty cells in the table
+            table_data = table.find_all(text=True)
 
-    #         for cell in table_data:
-    #             court_date = re.search(self.cal_datepat, cell)
-    #             court_time = re.search(self.cal_timepat, cell)
-    #             hearing = re.search(self.cal_hearingpat, cell)
-    #             # TODO Parse and grab under seal case captions
+            for cell in table_data:
+                court_date = re.search(self.cal_datepat, cell)
+                court_time = re.search(self.cal_timepat, cell)
+                hearing = re.search(self.cal_hearingpat, cell)
+                # TODO Parse and grab under seal case captions
 
-    #             if court_date:
-    #                 try:
-    #                     hearing_date = datetime.strptime(
-    #                             court_date.group(), self.date_format
-    #                             ).date()
+                if court_date:
+                    try:
+                        hearing_date = datetime.strptime(
+                                court_date.group(), self.date_format
+                                ).date()
 
-    #                 except ValueError:
-    #                     pass
+                    except ValueError:
+                        pass
 
-    #             if court_time:
-    #                 try:
-    #                     hearing_time = datetime.strptime(
-    #                             court_time.group(), self.time_format).time()
-    #                 except ValueError:
-    #                     pass
+                if court_time:
+                    try:
+                        hearing_time = datetime.strptime(
+                                court_time.group(), self.time_format).time()
+                    except ValueError:
+                        pass
 
-    #             if hearing:
-    #                 date_stamp = datetime.combine(hearing_date,
-    #                                               hearing_time)
+                if hearing:
+                    date_stamp = datetime.combine(hearing_date,
+                                                  hearing_time)
 
-    #                 # Details of hearing are at next index location in list
-    #                 hearing_detail = table_data[table_data.index(cell) + 1]
+                    # Details of hearing are at next index location in list
+                    hearing_detail = table_data[table_data.index(cell) + 1]
 
-    #                 data = {'judge': judge_name,
-    #                         'date': date_stamp,
-    #                         'case_no': hearing.group(1),
-    #                         'case_cap': hearing.group(2),
-    #                         'detail': hearing_detail}
+                    data = {'judge': judge_name,
+                            'date': date_stamp,
+                            'case_no': hearing.group(1),
+                            'case_cap': hearing.group(2),
+                            'detail': hearing_detail}
 
-    #                 hearing_data.append(data)
+                    hearing_data.append(data)
 
-    #             else:
-    #                 continue
+                else:
+                    continue
 
-    #     except AttributeError:
-    #         pass
+        except AttributeError:
+            pass
 
-    #     return hearing_data
+        return hearing_data
