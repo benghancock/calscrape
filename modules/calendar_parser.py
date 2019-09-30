@@ -29,13 +29,6 @@ class CalendarParser():
         self.cal_timepat = r'\d+:\d+\w+(AM|PM)'
         self.cal_hearingpat = r'^(\d:\d\d-[a-zA-Z]+-\d+-[a-zA-Z]+)\s-\s(.*)$'
 
-    # def get_lxml(self, url):
-    #     """Return a BeautifulSoup object for a given calendar URL using LXML"""
-    #     page = requests.get(url)
-    #     soup = BeautifulSoup(page.text, 'lxml')
-
-    #     return soup
-
 
 class CANDParser(CalendarParser):
     """A parser for the California Northern District court"""
@@ -50,17 +43,14 @@ class CANDParser(CalendarParser):
     def grab_calendars_listing(self):
         """Return the scraped calendar index page"""
         index_page = requests.get(self.calendar_index)
-        return index_page.text
+        self.index_html = index_page.text
 
-    def parse_calendars_listing(self, index_page):
-        """Return a dict of calendar URLs from the index page
-
-        Expects index page as text
-        """
+    def parse_calendars_listing(self):
+        """Return a dict of calendar URLs from the index page HTML"""
         calendar_urls = {}
 
         # Index page is organized as a table, get table rows ('tr')
-        soup = BeautifulSoup(index_page, 'lxml')
+        soup = BeautifulSoup(self.index_page, 'lxml')
         rows = soup.find_all('tr')
 
         for row in rows:
@@ -70,23 +60,27 @@ class CANDParser(CalendarParser):
 
             calendar_urls[judge_name] = calendar_url
 
-        return calendar_urls
+        self.calendar_urls = calendar_urls
 
-    def scrape_calendars(self, calendar_urls):
+    def scrape_calendars(self, testing=False):
         """
         Takes a dict of judge names and URLs
         returns a dict of requests 'Response' objects
         """
         calendars = {}
 
-        for judge, url in calendar_urls.items():
+        for judge, url in self.calendar_urls.items():
             r = requests.get(url)
-            time.sleep(.5)   # Slow down the scrape
-
             calendars[judge] = r
 
-        return calendars
+            if testing:          # Break after one scrape
+                break
 
+            else:
+                time.sleep(.5)   # Slow down the scrape
+                continue
+
+        self.calendars = calendars
 
     def parse_hearings(self, judge_name, calendar_soup):
         """Parse all hearing information on a given CAND judge's calendar"""
