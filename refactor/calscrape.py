@@ -8,9 +8,14 @@ import configparser
 
 import calendar_parser
 
-COURTS_CONFIG = 'courts_config.ini'
-CONFIG = configparser.ConfigParser()
-CONFIG.read(COURTS_CONFIG)
+
+def load_courts_config():
+    """Load hard-coded configurations"""
+    COURTS_CONFIG = "courts_config.ini"
+    config = configparser.ConfigParser()
+    config.read(COURTS_CONFIG)
+
+    return config
 
 
 def select_court(court_string, config):

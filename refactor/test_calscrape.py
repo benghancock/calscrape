@@ -4,22 +4,19 @@
 Tests for calscrape.py and modules
 """
 
-import configparser
+
 import unittest
 
 import calscrape
 import calendar_parser
 
-COURTS_CONFIG = 'courts_config.ini'
-CONFIG = configparser.ConfigParser()
-CONFIG.read(COURTS_CONFIG)
-
 
 class TestCalscrape(unittest.TestCase):
 
     def test_select_court(self):
+        config = calscrape.load_courts_config()
         test_court = "CAND"
-        court = calscrape.select_court(test_court, CONFIG)
+        court = calscrape.select_court(test_court, config)
         self.assertIsInstance(court, calendar_parser.CANDParser)
 
 
