@@ -40,17 +40,18 @@ class CANDParser(CalendarParser):
         """
         super().__init__(base_url, calendar_index)
 
-    def grab_calendars_listing(self):
-        """Return the scraped calendar index page"""
+    def grab_court_index(self):
+        """Return the scraped court calendar index page"""
         index_page = requests.get(self.calendar_index)
-        self.index_html = index_page.text
 
-    def parse_calendars_listing(self):
+        return index_page.text
+
+    def scrape_index(self, index_page):
         """Return a dict of calendar URLs from the index page HTML"""
-        calendar_urls = {}
+        parsed_index = {}
 
         # Index page is organized as a table, get table rows ('tr')
-        soup = BeautifulSoup(self.index_page, 'lxml')
+        soup = BeautifulSoup(index_page, 'lxml')
         rows = soup.find_all('tr')
 
         for row in rows:
@@ -58,9 +59,9 @@ class CANDParser(CalendarParser):
             url_ending = row.th.a['href'].strip()
             calendar_url = self.base_url + url_ending
 
-            calendar_urls[judge_name] = calendar_url
+            parsed_index[judge_name] = calendar_url
 
-        self.calendar_urls = calendar_urls
+        return parsed_index
 
     def scrape_calendars(self, testing=False):
         """
