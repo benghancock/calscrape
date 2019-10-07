@@ -83,10 +83,16 @@ class CANDParser(CalendarParser):
 
         self.calendars = calendars
 
-    def parse_hearings(self, judge_name, calendar_soup):
+    def parse_calendar(self, calendar):
         """Parse all hearing information on a given CAND judge's calendar"""
 
         hearing_data = []
+
+        calendar_soup = BeautifulSoup(calendar, 'lxml')
+
+        # Get the judge's name from string
+        page_top = str(calendar_soup.find('a', attrs={'name': '#top'}))
+        judge_name = re.search(r'Calendar for: (\w.*?)<br/>', page_top).group(1)
 
         # Calendar is organized as a table, get table rows ('tr')
         table = calendar_soup.find('table', attrs={'class': 'Calendar'})

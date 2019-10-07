@@ -19,8 +19,8 @@ class TestCalscrape(unittest.TestCase):
     def test_select_court(self):
         config = calscrape.load_courts_config()
         test_court = "CAND"
-        court = calscrape.select_court(test_court, config)
-        self.assertIsInstance(court, calendar_parser.CANDParser)
+        parser = calscrape.select_court(test_court, config)
+        self.assertIsInstance(parser, calendar_parser.CANDParser)
 
 
 class TestCalendarparser(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestCalendarparser(unittest.TestCase):
         """Set up necessary elements for testing"""
         config = calscrape.load_courts_config()
         test_court = "CAND"
-        self.court = calscrape.select_court(test_court, config)
+        self.parser = calscrape.select_court(test_court, config)
 
         self.test_judge_name = "Alsup, William H. [WHA]"
         self.test_judge_url = "https://www.cand.uscourts.gov/CEO/cfd.aspx?7137"
@@ -47,10 +47,15 @@ class TestCalendarparser(unittest.TestCase):
         Test method for retrieving court index
         Should return dictionary with judge's name and correct URL
         """
-        court_index = self.court.scrape_index(self.test_court_index)
+        court_index = self.parser.scrape_index(self.test_court_index)
         self.assertEqual(court_index.get(self.test_judge_name),
                          self.test_judge_url)
-        
+
+    def test_parse_calendar(self):
+        calendar = self.parser.parse_calendar(self.test_judge_page)
+        test_hearing = calendar[0]
+        self.assertEqual(test_hearing.get("judge"), "Judge William Alsup")
+        self.assertEqual(test_hearing.get("case_no"), "3:19-cv-01454-WHA")
 
 
 if __name__ == '__main__':
