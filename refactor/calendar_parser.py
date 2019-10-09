@@ -8,6 +8,7 @@ from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
+from dateutil import tz
 
 
 class CalendarParser():
@@ -39,6 +40,7 @@ class CANDParser(CalendarParser):
         then initialize attributes needed for child class
         """
         super().__init__(base_url, calendar_index)
+        self.court_tz = tz.gettz('America/Los_Angeles')
 
     def grab_court_index(self):
         """Return the scraped court calendar index page"""
@@ -126,7 +128,10 @@ class CANDParser(CalendarParser):
 
                 if hearing:
                     date_stamp = datetime.combine(hearing_date,
-                                                  hearing_time)
+                                                  hearing_time,
+                                                  tzinfo=self.court_tz)
+
+                    # TODO Insert timezone here
 
                     # Details of hearing are at next index location in list
                     hearing_detail = table_data[table_data.index(cell) + 1]

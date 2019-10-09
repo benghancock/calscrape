@@ -4,7 +4,7 @@
 Tests for calscrape.py and modules
 """
 
-
+from datetime import datetime, timezone, timedelta
 import unittest
 
 import calscrape
@@ -37,6 +37,8 @@ class TestCalendarparser(unittest.TestCase):
         self.test_court_index = open(TEST_CAND_INDEX)
         self.test_judge_page = open(TEST_JUDGE_PAGE)
 
+        self.test_tz = timezone(timedelta(hours=-7))
+
     def tearDown(self):
         """Close test data files"""
         self.test_court_index.close()
@@ -56,6 +58,8 @@ class TestCalendarparser(unittest.TestCase):
         test_hearing = calendar[0]
         self.assertEqual(test_hearing.get("judge"), "Judge William Alsup")
         self.assertEqual(test_hearing.get("case_no"), "3:19-cv-01454-WHA")
+        self.assertEqual(test_hearing.get("date"),
+                         datetime(2019, 9, 18, 10, tzinfo=self.test_tz))
 
 
 if __name__ == '__main__':

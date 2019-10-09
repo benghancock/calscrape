@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-CalScrape: rapidly search and scrape juidical calendars
+CalScrape: rapidly scrape and search judicial calendars
 """
 
 import configparser
