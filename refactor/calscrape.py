@@ -8,12 +8,13 @@ import configparser
 
 import calendar_parser
 
+COURTS_CONFIG = "courts_config.ini"
 
-def load_courts_config():
+
+def load_courts_config(config_file):
     """Load hard-coded configurations"""
-    COURTS_CONFIG = "courts_config.ini"
     config = configparser.ConfigParser()
-    config.read(COURTS_CONFIG)
+    config.read(config_file)
 
     return config
 
