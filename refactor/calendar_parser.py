@@ -30,6 +30,9 @@ class CalendarParser():
         self.cal_timepat = r'\d+:\d+\w+(AM|PM)'
         self.cal_hearingpat = r'^(\d:\d\d-[a-zA-Z]+-\d+-[a-zA-Z]+)\s-\s(.*)$'
 
+        # Default status for scheduled hearings
+        self.default_status = "SCHEDULED"
+
 
 class CANDParser(CalendarParser):
     """A parser for the California Northern District court"""
@@ -131,8 +134,6 @@ class CANDParser(CalendarParser):
                                                   hearing_time,
                                                   tzinfo=self.court_tz)
 
-                    # TODO Insert timezone here
-
                     # Details of hearing are at next index location in list
                     hearing_detail = table_data[table_data.index(cell) + 1]
 
@@ -140,7 +141,8 @@ class CANDParser(CalendarParser):
                             'date': date_stamp,
                             'case_no': hearing.group(1),
                             'case_cap': hearing.group(2),
-                            'detail': hearing_detail}
+                            'detail': hearing_detail,
+                            'status': self.default_status}
 
                     hearing_data.append(data)
 
