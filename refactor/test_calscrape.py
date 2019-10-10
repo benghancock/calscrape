@@ -9,15 +9,18 @@ import unittest
 
 import calscrape
 import calendar_parser
+from dateutil import tz
+import hearings
 
 TEST_CAND_INDEX = 'test_data/test_cand_index.html'
 TEST_JUDGE_PAGE = 'test_data/test_judge_page.html'
+COURTS_CONFIG = "courts_config.ini"
 
 
 class TestCalscrape(unittest.TestCase):
 
     def test_select_court(self):
-        config = calscrape.load_courts_config()
+        config = calscrape.load_courts_config(COURTS_CONFIG)
         test_court = "CAND"
         parser = calscrape.select_court(test_court, config)
         self.assertIsInstance(parser, calendar_parser.CANDParser)
