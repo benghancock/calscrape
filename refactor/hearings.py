@@ -14,8 +14,11 @@ class Hearings():
         this_set = self.make_set(self.hearing_data)
         prior_set = self.make_set(prior_scrape)
 
-        return this_set.difference(prior_set)
-        
+        new = this_set.difference(prior_set)
+        new_reverted = self.revert_list(new)
+
+        return new_reverted
+
     def make_set(self, data):
         """Convert hearing data into set of tuples for comparison purposes"""
         hearings_set = set(

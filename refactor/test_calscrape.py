@@ -86,9 +86,10 @@ class TestHearings(unittest.TestCase):
         latest_scrape = hearings.Hearings(self.test_latest)
         self.assertTrue(latest_scrape.hearing_data == self.test_latest)
         self.assertTrue(len(latest_scrape.hearing_data) == 3)
-        # self.assertTrue(
-        #     latest_scrape.detect_new(self.test_prior) == self.test_data[2]
-        #     )
+
+        new = latest_scrape.detect_new(self.test_prior)
+        self.assertTrue(len(new) == 1)
+        self.assertTrue(new[0] == self.test_data[2])
 
     def test_make_set(self):
         """Turn a list of dictionaries into a set for comparison"""
@@ -110,6 +111,7 @@ class TestHearings(unittest.TestCase):
         # sort the reverted list
         reverted = sorted(reverted, key=lambda x: list(x.keys()))
         self.assertTrue(data[1] == reverted[1])
+
 
 if __name__ == '__main__':
     unittest.main()
