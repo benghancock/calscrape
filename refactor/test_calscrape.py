@@ -74,16 +74,42 @@ class TestHearings(unittest.TestCase):
         test_court = "CAND"
         self.parser = calscrape.select_court(test_court, config)
         with open(TEST_JUDGE_PAGE) as p:
-            self.test_data = self.parser.parse_calendar(p)[:3]
+            self.test_data = self.parser.parse_calendar(p)
 
+        self.test_latest = self.test_data[:3]
+        self.test_prior = self.test_data[:2]
         self.test_tz = tz.gettz('America/Los_Angeles')
         self.test_scrape_time = datetime(2019, 10, 1, tzinfo=self.test_tz)
 
-    def test_store_local(self):
-        court_hearings = hearings.Hearings(self.test_data,
-                                           self.test_scrape_time)
+    def test_detect_new(self):
+        """A method for detecting new hearings"""
+        latest_scrape = hearings.Hearings(self.test_latest)
+        self.assertTrue(latest_scrape.hearing_data == self.test_latest)
+        self.assertTrue(len(latest_scrape.hearing_data) == 3)
+        # self.assertTrue(
+        #     latest_scrape.detect_new(self.test_prior) == self.test_data[2]
+        #     )
 
+    def test_make_set(self):
+        """Turn a list of dictionaries into a set for comparison"""
+        data = [{'a': 'b', 'c': 'd'}, {'e': 'f', 'g': 'h'}]
+        test_hearings = hearings.Hearings(data)
+        set_data = test_hearings.make_set(test_hearings.hearing_data)
+        self.assertTrue(
+            set_data == {(('e', 'f'), ('g', 'h')), (('a', 'b'), ('c', 'd'))}
+            )
 
+    def test_revert_list(self):
+        """Revert a set of tuple elements back to a list of dictionaries"""
+        data = [{'a': 'b', 'c': 'd'}, {'e': 'f', 'g': 'h'}]
+        test_hearings = hearings.Hearings(data)
+
+        set_data = {(('e', 'f'), ('g', 'h')), (('a', 'b'), ('c', 'd'))}
+        reverted = test_hearings.revert_list(set_data)
+
+        # sort the reverted list
+        reverted = sorted(reverted, key=lambda x: list(x.keys()))
+        self.assertTrue(data[1] == reverted[1])
 
 if __name__ == '__main__':
     unittest.main()
