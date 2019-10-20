@@ -93,11 +93,27 @@ class TestHearings(unittest.TestCase):
 
     def test_detect_cancelled(self):
         """A method for detecting cancelled hearings"""
-        mock_prior = hearings.Hearings(self.test_data[:3])
-        mock_latest = hearings.Hearings(self.test_data[:2])
+        # Test that missing hearing is detected as cancelled
+        a_mock_prior = hearings.Hearings(self.test_data[:3])
+        a_mock_latest = hearings.Hearings(self.test_data[:2])
 
-        cancelled = mock_latest.detect_cancelled(mock_prior)
-        self.assertTrue(cancelled[0] == self.test_data[2])
+        a_mock_scrape_time = datetime(2019, 9, 15, tzinfo=self.test_tz)
+        a_cancelled = a_mock_latest.detect_cancelled(
+            a_mock_prior, a_mock_scrape_time
+        )
+
+        self.assertTrue(a_cancelled[0] == self.test_data[2])
+
+        # Test that hearings in the past are *not* marked cancelled
+        b_mock_prior = hearings.Hearings(self.test_data[:4])
+        b_mock_latest = hearings.Hearings(self.test_data[2:4])
+
+        b_mock_scrape_time = datetime(2019, 9, 20, tzinfo=self.test_tz)
+        b_cancelled = b_mock_latest.detect_cancelled(
+            b_mock_prior, b_mock_scrape_time
+        )
+
+        self.assertTrue(not b_cancelled)
 
     def test_make_set(self):
         """Turn a list of dictionaries into a set for comparison"""
