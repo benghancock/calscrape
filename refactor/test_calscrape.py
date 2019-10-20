@@ -91,6 +91,14 @@ class TestHearings(unittest.TestCase):
         self.assertTrue(len(new) == 1)
         self.assertTrue(new[0] == self.test_data[2])
 
+    def test_detect_cancelled(self):
+        """A method for detecting cancelled hearings"""
+        mock_prior = hearings.Hearings(self.test_data[:3])
+        mock_latest = hearings.Hearings(self.test_data[:2])
+
+        cancelled = mock_latest.detect_cancelled(mock_prior)
+        self.assertTrue(cancelled[0] == self.test_data[2])
+
     def test_make_set(self):
         """Turn a list of dictionaries into a set for comparison"""
         data = [{'a': 'b', 'c': 'd'}, {'e': 'f', 'g': 'h'}]

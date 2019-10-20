@@ -19,16 +19,33 @@ class Hearings():
 
         return new_reverted
 
+    def detect_cancelled(self, prior_scrape):
+        """Return hearings that have been cancelled
+
+        Hearings are determined to be cancelled if:
+        1. They were present in the prior scrape and are not present
+           in the latest scrape; AND
+        2. They date of the hearing has not yet passed
+
+        prior_scrape is assumed to be Hearings object
+        """
+        prior = self.make_set(prior_scrape.hearing_data)
+        latest = self.make_set(self.hearing_data)
+
+        cancelled_set = prior.difference(latest)
+
+        return self.revert_list(cancelled_set)
+
     def make_set(self, data):
-        """Convert hearing data into set of tuples for comparison purposes"""
-        hearings_set = set(
+        """Convert list of dicts into set of tuples for comparison purposes"""
+        set_data = set(
             tuple(sorted(h.items())) for h in data
             )
 
-        return hearings_set
+        return set_data
 
     def revert_list(self, set_data):
-        """Revert a set of tuple elements back to a list of dictionaries"""
+        """Revert a set of tuple elements back to a list of dicts"""
         list_data = []
 
         for elem in set_data:
