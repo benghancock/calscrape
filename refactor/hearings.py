@@ -2,6 +2,9 @@
 A module for handling data about court hearings
 """
 
+from datetime import datetime
+import json
+
 
 class Hearings():
     """Object for outputing and comparing hearing data"""
@@ -66,3 +69,29 @@ class Hearings():
             list_data.append(dict((k, v) for k, v in elem))
 
         return list_data
+
+    def store_scrape(self, target):
+        """Store the scrape data on the local machine as JSON"""
+
+        # make a copy
+        storage_container = {
+            'store_time': datetime.strftime(
+                datetime.now(),
+                '%Y-%m-%d %H:%M %z'
+                ),
+            'data': self.hearing_data
+            }
+
+        # Convert all the datetime data to string
+        for entry in storage_container.get('data'):
+            date_dict = {
+                'date': datetime.strftime(
+                    entry.get('date'),
+                    '%Y-%m-%d %H:%M %z'
+                )
+            }
+
+            entry.update(date_dict)
+
+        with open(target, 'w') as f:
+            json.dump(storage_container, f)

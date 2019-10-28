@@ -136,6 +136,14 @@ class TestHearings(unittest.TestCase):
         reverted = sorted(reverted, key=lambda x: list(x.keys()))
         self.assertTrue(data[1] == reverted[1])
 
+    def test_store_scrape(self):
+        """A method for storing the latest scrape data locally"""
+        latest_scrape = hearings.Hearings(self.test_data[:3])
+        latest_scrape.store_scrape('test.json')
+
+    def test_load_scrape(self):
+        """A method for parsing scrape data stored locally"""
+
 
 if __name__ == '__main__':
     unittest.main()
