@@ -1,3 +1,4 @@
+
 """
 A module for handling data about court hearings
 """
@@ -6,11 +7,23 @@ from datetime import datetime
 import json
 
 
+def load_hearings(scrape_file):
+    """Return a Hearings object with locally stored scrape data"""
+    with open(scrape_file) as f:
+        scrape = json.load(f)
+
+    hearing_data = scrape.get('data')
+    store_ts = scrape.get('store_ts')
+
+    return Hearings(hearing_data, store_ts)
+
+
 class Hearings():
     """Object for outputing and comparing hearing data"""
 
-    def __init__(self, hearing_data):
+    def __init__(self, hearing_data, store_ts=''):
         self.hearing_data = hearing_data
+        self.store_ts = store_ts
 
     def detect_new(self, prior_scrape):
         """A method for detecting new hearings"""
@@ -73,9 +86,10 @@ class Hearings():
     def store_scrape(self, target):
         """Store the scrape data on the local machine as JSON"""
 
+        # TODO Get timezone info from the local machine
         # make a copy
         storage_container = {
-            'store_time': datetime.strftime(
+            'store_ts': datetime.strftime(
                 datetime.now(),
                 '%Y-%m-%d %H:%M %z'
                 ),

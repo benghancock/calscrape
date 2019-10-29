@@ -11,9 +11,12 @@ import calscrape
 import calendar_parser
 from dateutil import tz
 import hearings
+import json
+
 
 TEST_CAND_INDEX = 'test_data/test_cand_index.html'
 TEST_JUDGE_PAGE = 'test_data/test_judge_page.html'
+SCRAPE_FILE = 'test_data/test.json'
 COURTS_CONFIG = "courts_config.ini"
 
 
@@ -139,10 +142,15 @@ class TestHearings(unittest.TestCase):
     def test_store_scrape(self):
         """A method for storing the latest scrape data locally"""
         latest_scrape = hearings.Hearings(self.test_data[:3])
-        latest_scrape.store_scrape('test.json')
+        latest_scrape.store_scrape(SCRAPE_FILE)
 
     def test_load_scrape(self):
         """A method for parsing scrape data stored locally"""
+        last_scrape = hearings.load_hearings(SCRAPE_FILE)
+        self.assertIsInstance(last_scrape, hearings.Hearings)
+        self.assertTrue(
+            len(last_scrape.hearing_data) == 3
+            )
 
 
 if __name__ == '__main__':
