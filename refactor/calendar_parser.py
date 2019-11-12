@@ -68,32 +68,32 @@ class CANDParser(CalendarParser):
 
         return parsed_index
 
-    def scrape_calendars(self, testing=False):
+    def scrape_calendars(self, calendar_urls, testing=False):
         """
         Takes a dict of judge names and URLs
         returns a dict of requests 'Response' objects
         """
         calendars = {}
 
-        for judge, url in self.calendar_urls.items():
+        for judge, url in calendar_urls.items():
             r = requests.get(url)
             calendars[judge] = r
 
             if testing:          # Break after one scrape
-                break
+                return calendars
 
             else:
                 time.sleep(.5)   # Slow down the scrape
                 continue
 
-        self.calendars = calendars
+        return calendars
 
     def parse_calendar(self, calendar):
         """Parse all hearing information on a given CAND judge's calendar"""
 
         hearing_data = []
 
-        calendar_soup = BeautifulSoup(calendar, 'lxml')
+        calendar_soup = BeautifulSoup(calendar.text, 'lxml')
 
         # Get the judge's name from string
         page_top = str(calendar_soup.find('a', attrs={'name': '#top'}))
