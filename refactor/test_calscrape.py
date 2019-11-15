@@ -11,7 +11,6 @@ import calscrape
 import calendar_parser
 from dateutil import tz
 import hearings
-import json
 
 
 TEST_CAND_INDEX = 'test_data/test_cand_index.html'
