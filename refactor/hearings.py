@@ -6,6 +6,8 @@ A module for handling data about court hearings
 from datetime import datetime
 import json
 
+from dateutil import tz
+
 
 def load_hearings(scrape_file):
     """Return a Hearings object with locally stored scrape data"""
@@ -86,11 +88,12 @@ class Hearings():
     def store_scrape(self, target):
         """Store the scrape data on the local machine as JSON"""
 
-        # TODO Get timezone info from the local machine
+        utc_timestamp = datetime.now(tz.UTC)
+
         # make a copy
         storage_container = {
             'store_ts': datetime.strftime(
-                datetime.now(),
+                utc_timestamp,
                 '%Y-%m-%d %H:%M %z'
                 ),
             'data': self.hearing_data

@@ -8,6 +8,8 @@ import argparse
 import configparser
 
 import calendar_parser
+import hearings
+
 
 COURTS_CONFIG = "courts_config.ini"
 
@@ -66,7 +68,8 @@ def main():
         parsed_calendar = scraper.parse_calendar(calendar.text)
         parsed_calendars.extend(parsed_calendar)
 
-    print(parsed_calendars)
+    scrape_results = hearings.Hearings(parsed_calendars)
+    scrape_results.store_scrape('test.json')
 
 
 if __name__ == '__main__':
