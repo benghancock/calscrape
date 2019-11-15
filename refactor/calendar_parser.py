@@ -93,7 +93,7 @@ class CANDParser(CalendarParser):
 
         hearing_data = []
 
-        calendar_soup = BeautifulSoup(calendar.text, 'lxml')
+        calendar_soup = BeautifulSoup(calendar, 'lxml')
 
         # Get the judge's name from string
         page_top = str(calendar_soup.find('a', attrs={'name': '#top'}))

@@ -63,7 +63,7 @@ def main():
     parsed_calendars = []
 
     for judge, calendar in calendars.items():
-        parsed_calendar = scraper.parse_calendar(calendar)
+        parsed_calendar = scraper.parse_calendar(calendar.text)
         parsed_calendars.extend(parsed_calendar)
 
     print(parsed_calendars)
