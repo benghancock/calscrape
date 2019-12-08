@@ -2,6 +2,7 @@
 A Python module for scraping and parsing federal judicial calendars
 """
 
+import logging
 import re
 import time
 from datetime import datetime
@@ -9,6 +10,23 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 from dateutil import tz
+
+logging.basicConfig(filename='parser.log', level=logging.DEBUG)
+
+
+def parser_log(func):
+    def log_wrapper(*args, **kwargs):
+        logging.debug(f'TRACE: calling function {func.__name__}()'
+                      f'with {args}, {kwargs}')
+
+        result = func(*args, **kwargs)
+
+        logging.debug(f'TRACE: function {func.__name__}() returned'
+                      f'{result}')
+
+        return result
+
+    return log_wrapper
 
 
 class CalendarParser():
@@ -45,12 +63,14 @@ class CANDParser(CalendarParser):
         super().__init__(base_url, calendar_index)
         self.court_tz = tz.gettz('America/Los_Angeles')
 
+    @parser_log
     def grab_court_index(self):
         """Return the scraped court calendar index page"""
         index_page = requests.get(self.calendar_index)
 
         return index_page.text
 
+    @parser_log
     def scrape_index(self, index_page):
         """Return a dict of calendar URLs from the index page HTML"""
         parsed_index = {}
@@ -62,12 +82,14 @@ class CANDParser(CalendarParser):
         for row in rows:
             judge_name = row.th.a.text.strip()
             url_ending = row.th.a['href'].strip()
-            calendar_url = self.base_url + url_ending
+            # Handle update first seen on 2019-11-25
+            calendar_url = url_ending
 
             parsed_index[judge_name] = calendar_url
 
         return parsed_index
 
+    @parser_log
     def scrape_calendars(self, calendar_urls, testing=False):
         """
         Takes a dict of judge names and URLs
@@ -88,6 +110,7 @@ class CANDParser(CalendarParser):
 
         return calendars
 
+    @parser_log
     def parse_calendar(self, calendar):
         """Parse all hearing information on a given CAND judge's calendar"""
 
@@ -97,7 +120,16 @@ class CANDParser(CalendarParser):
 
         # Get the judge's name from string
         page_top = str(calendar_soup.find('a', attrs={'name': '#top'}))
-        judge_name = re.search(r'Calendar for: (\w.*?)<br/>', page_top).group(1)
+
+        # Handle an empty calendar
+        try:
+            judge_name = re.search(
+                r'Calendar for: (\w.*?)<br/>',
+                page_top
+            ).group(1)
+
+        except AttributeError:
+            return hearing_data
 
         # Calendar is organized as a table, get table rows ('tr')
         table = calendar_soup.find('table', attrs={'class': 'Calendar'})
