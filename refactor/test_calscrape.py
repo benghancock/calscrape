@@ -12,11 +12,95 @@ import calendar_parser
 from dateutil import tz
 import hearings
 
-
 TEST_CAND_INDEX = 'test_data/test_cand_index.html'
 TEST_JUDGE_PAGE = 'test_data/test_judge_page.html'
 SCRAPE_FILE = 'test_data/test.json'
 COURTS_CONFIG = "courts_config.ini"
+
+################################
+# Sample data to use for testing
+################################
+
+
+# Create a mock object for a previous scrape
+sample_data_a = [
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Very Angry v. Somewhat Bewildered",
+        "detail": "Motion to Dismiss",
+        "date": datetime(2019, 11, 1, 8)
+    },
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Zerg v. Terran",
+        "detail": "Motion for TRO",
+        "date": datetime(2019, 11, 5, 10)
+    },
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Alien v. Predator",
+        "detail": "Motion for Facehugger Removal",
+        "date": datetime(2020, 1, 1, 16)
+    }
+]
+
+sample_a_timestamp = datetime(2019, 11, 1, 0)
+sample_hearings_a = hearings.Hearings(
+    hearing_data=sample_data_a,
+    store_ts=sample_a_timestamp
+)
+
+# Create a mock object for the most recent scrape
+sample_data_b = [
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Very Angry v. Somewhat Bewildered",
+        "detail": "Motion to Dismiss",
+        "date": datetime(2019, 11, 1, 8)
+    },
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Zerg v. Terran",
+        "detail": "Motion for TRO",
+        "date": datetime(2019, 11, 5, 10)
+    },
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Pig v. Bird",
+        "detail": "Status Conference",
+        "date": datetime(2021, 1, 9, 15)
+    }
+]
+
+sample_b_timestamp = datetime(2019, 11, 7, 0)
+sample_hearings_b = hearings.Hearings(
+    hearing_data=sample_data_b,
+    store_ts=sample_b_timestamp
+)
+
+# An example of a newly detected hearing
+newly_detected = [
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Pig v. Bird",
+        "detail": "Status Conference",
+        "date": datetime(2021, 1, 9, 15)
+    }
+]
+
+# An example of a cancelled hearing
+cancelled_hearing = [
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Alien v. Predator",
+        "detail": "Motion for Facehugger Removal",
+        "date": datetime(2020, 1, 1, 16)
+    }
+]
+
+################################
+# Test Fixtures
+################################
 
 
 class TestCalscrape(unittest.TestCase):
@@ -53,6 +137,7 @@ class TestCalendarparser(unittest.TestCase):
         Test method for retrieving court index
         Should return dictionary with judge's name and correct URL
         """
+        #FIXME Update to reflect the new index structure
         court_index = self.parser.scrape_index(self.test_court_index)
         self.assertEqual(court_index.get(self.test_judge_name),
                          self.test_judge_url)
@@ -85,37 +170,13 @@ class TestHearings(unittest.TestCase):
 
     def test_detect_new(self):
         """A method for detecting new hearings"""
-        latest_scrape = hearings.Hearings(self.test_latest)
-        self.assertTrue(latest_scrape.hearing_data == self.test_latest)
-        self.assertTrue(len(latest_scrape.hearing_data) == 3)
-
-        new = latest_scrape.detect_new(self.test_prior)
-        self.assertTrue(len(new) == 1)
-        self.assertTrue(new[0] == self.test_data[2])
+        new = sample_hearings_b.detect_new(sample_hearings_a)
+        self.assertTrue(new[0] == newly_detected[0])
 
     def test_detect_cancelled(self):
         """A method for detecting cancelled hearings"""
-        # Test that missing hearing is detected as cancelled
-        a_mock_prior = hearings.Hearings(self.test_data[:3])
-        a_mock_latest = hearings.Hearings(self.test_data[:2])
-
-        a_mock_scrape_time = datetime(2019, 9, 15, tzinfo=self.test_tz)
-        a_cancelled = a_mock_latest.detect_cancelled(
-            a_mock_prior, a_mock_scrape_time
-        )
-
-        self.assertTrue(a_cancelled[0] == self.test_data[2])
-
-        # Test that hearings in the past are *not* marked cancelled
-        b_mock_prior = hearings.Hearings(self.test_data[:4])
-        b_mock_latest = hearings.Hearings(self.test_data[2:4])
-
-        b_mock_scrape_time = datetime(2019, 9, 20, tzinfo=self.test_tz)
-        b_cancelled = b_mock_latest.detect_cancelled(
-            b_mock_prior, b_mock_scrape_time
-        )
-
-        self.assertTrue(not b_cancelled)
+        cancelled = sample_hearings_b.detect_cancelled(sample_hearings_a)
+        self.assertTrue(cancelled[0] == cancelled_hearing[0])
 
     def test_make_set(self):
         """Turn a list of dictionaries into a set for comparison"""
