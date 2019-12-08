@@ -6,101 +6,115 @@ A module for handling data about court hearings
 from datetime import datetime
 import json
 
-from dateutil import tz
-
 
 def load_hearings(scrape_file):
     """Return a Hearings object with locally stored scrape data"""
     with open(scrape_file) as f:
         scrape = json.load(f)
 
-    hearing_data = scrape.get('data')
-    store_ts = scrape.get('store_ts')
+    hearing_data = scrape.get('hearing_data')
+    scrape_ts_string = scrape.get('scrape_ts')
 
-    return Hearings(hearing_data, store_ts)
+    # The datetime data needs to be reverted to a datetime object
+    scrape_ts_dt = datetime.strptime(
+            scrape_ts_string,
+            '%Y-%m-%d %H:%M %z'
+        )
+
+    for hearing in hearing_data:
+        hearing_ts_string = hearing.get('date')
+        hearing_ts_dt = datetime.strptime(
+            hearing_ts_string,
+            '%Y-%m-%d %H:%M %z'
+        )
+        hearing['date'] = hearing_ts_dt
+
+    return Hearings(hearing_data, scrape_ts_dt)
 
 
 class Hearings():
     """Object for outputing and comparing hearing data"""
 
-    def __init__(self, hearing_data, store_ts=''):
+    def __init__(self, hearing_data, scrape_ts):
         self.hearing_data = hearing_data
-        self.store_ts = store_ts
+        self.scrape_ts = scrape_ts
+
+    # def detect_new(self, prior_scrape):
+    #     """A method for detecting new hearings"""
+    #     this_set = self.make_set(self.hearing_data)
+    #     prior_set = self.make_set(prior_scrape)
+
+    #     new = this_set.difference(prior_set)
+    #     new_reverted = self.revert_list(new)
+
+    #     return new_reverted
 
     def detect_new(self, prior_scrape):
-        """A method for detecting new hearings"""
-        this_set = self.make_set(self.hearing_data)
-        prior_set = self.make_set(prior_scrape)
+        """Detect which hearings in the latest scrape are new
 
-        new = this_set.difference(prior_set)
-        new_reverted = self.revert_list(new)
+        1. Check each hearing in the latest scrape
+        2. Is it the same as any of the hearings in the prior scrape?
+        3. If no, then it's new
+        """
 
-        return new_reverted
+        new_hearings = []
 
-    def detect_cancelled(self, prior_scrape, scrape_time):
-        """Return hearings that have been cancelled
+        for latest_hearing in self.hearing_data:
+            if latest_hearing in prior_scrape.hearing_data:
+                continue
+            else:
+                new_hearings.append(latest_hearing)
 
-        Hearings are determined to be cancelled if:
+        return new_hearings
+
+    def detect_cancelled(self, prior_scrape):
+        """Return hearings that have been cancelled.
+
+        This is intended to be invoked on the object representing the latest
+        scrape. Hearings are determined to be cancelled if:
+
         1. They were present in the prior scrape and are not present
            in the latest scrape; AND
         2. They date of the hearing has not yet passed
 
         prior_scrape is assumed to be Hearings object
-        """
-        prior = self.make_set(prior_scrape.hearing_data)
-        latest = self.make_set(self.hearing_data)
 
-        absent_set = prior.difference(latest)
-        absent_hearings = self.revert_list(absent_set)
+        """
 
         cancelled_hearings = []
 
-        for hearing in absent_hearings:
-            # date should be datetime object
-            hearing_dt = hearing.get('date')
+        for prior_hearing in prior_scrape.hearing_data:
+            if prior_hearing not in self.hearing_data:
+                hearing_dt = prior_hearing.get('date')
 
-            # was the hearing scheduled for a future date?
-            # or is it absent because the date has passed?
-            if hearing_dt > scrape_time:
-                cancelled_hearings.append(hearing)
+                if hearing_dt > self.scrape_ts:
+                    cancelled_hearings.append(prior_hearing)
+
+                else:
+                    continue
+
             else:
                 continue
 
         return cancelled_hearings
 
-    def make_set(self, data):
-        """Convert list of dicts into set of tuples for comparison purposes"""
-        set_data = set(
-            tuple(sorted(h.items())) for h in data
-            )
-
-        return set_data
-
-    def revert_list(self, set_data):
-        """Revert a set of tuple elements back to a list of dicts"""
-        list_data = []
-
-        for elem in set_data:
-            list_data.append(dict((k, v) for k, v in elem))
-
-        return list_data
-
     def store_scrape(self, target):
         """Store the scrape data on the local machine as JSON"""
 
-        utc_timestamp = datetime.now(tz.UTC)
+        # Convert the scrape_ts to a string:
+        ts_string = datetime.strftime(
+            self.scrape_ts,
+            '%Y-%m-%d %H:%M %z'
+        )
 
-        # make a copy
+        # Make a container for the data
         storage_container = {
-            'store_ts': datetime.strftime(
-                utc_timestamp,
-                '%Y-%m-%d %H:%M %z'
-                ),
-            'data': self.hearing_data
-            }
+            'scrape_ts': ts_string,
+            'hearing_data': self.hearing_data
+        }
 
         # Convert all the datetime data to string
-        for entry in storage_container.get('data'):
+        for entry in storage_container['hearing_data']:
             date_dict = {
                 'date': datetime.strftime(
                     entry.get('date'),
