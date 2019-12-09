@@ -63,14 +63,12 @@ class CANDParser(CalendarParser):
         super().__init__(base_url, calendar_index)
         self.court_tz = tz.gettz('America/Los_Angeles')
 
-    @parser_log
     def grab_court_index(self):
         """Return the scraped court calendar index page"""
         index_page = requests.get(self.calendar_index)
 
         return index_page.text
 
-    @parser_log
     def scrape_index(self, index_page):
         """Return a dict of calendar URLs from the index page HTML"""
         parsed_index = {}
@@ -89,7 +87,6 @@ class CANDParser(CalendarParser):
 
         return parsed_index
 
-    @parser_log
     def scrape_calendars(self, calendar_urls, testing=False):
         """
         Takes a dict of judge names and URLs
@@ -110,7 +107,6 @@ class CANDParser(CalendarParser):
 
         return calendars
 
-    @parser_log
     def parse_calendar(self, calendar):
         """Parse all hearing information on a given CAND judge's calendar"""
 
