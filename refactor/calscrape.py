@@ -37,6 +37,14 @@ def parse_args():
         help='test mode'
     )
 
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--new",
+        action="store_true",
+        default=False,
+        help="print hearings new since last scrape"
+    )
+
     args = parser.parse_args()
 
     return args
@@ -64,9 +72,10 @@ def select_court(court_string, config):
 
 
 def main():
+    args = parse_args()
+
     # TODO Handle FileNotFoundError for config file
     config = load_courts_config(COURTS_CONFIG)
-    args = parse_args()
     court = args.court.lower()
     testing = args.test
 
@@ -95,11 +104,26 @@ def main():
         scrape_ts=scrape_ts
     )
 
-    prior_scrape = hearings.load_hearings(LOCAL_SCRAPE_DATA)
-    new = scrape.detect_new(prior_scrape)
+    # TODO: Implement option to check for new hearings
 
-    # Still testing that new hearing detection is working...
-    print(new)
+    if args.new:
+        try:
+            prior_scrape = hearings.load_hearings(LOCAL_SCRAPE_DATA)
+            new = scrape.detect_new(prior_scrape)
+            new_count = str(len(new))
+            print(f"found {new_count} new hearings")
+            print(new)
+
+        except FileNotFoundError:
+            print("cannot id new hearings because file for prior scrape "
+                  "could not be found ... storing and exiting")
+
+            scrape.store_scrape(LOCAL_SCRAPE_DATA)
+
+    # DEFAULT BEHAVIOR: Overwrite the prior scrape data
+    else:
+        scrape.store_scrape(LOCAL_SCRAPE_DATA)
+
     print("done")
 
 
