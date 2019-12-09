@@ -14,7 +14,7 @@ import hearings
 
 
 COURTS_CONFIG = "courts_config.ini"
-LOCAL_SCRAPE_DATA = "hearings.json"
+LOCAL_SCRAPE_DATA = "local_scrape_data.json"
 
 
 def parse_args():
@@ -43,6 +43,13 @@ def parse_args():
         action="store_true",
         default=False,
         help="print hearings new since last scrape"
+    )
+
+    mode.add_argument(
+        "--cancelled",
+        action="store_true",
+        default=False,
+        help="print hearings cancelled since last scrape"
     )
 
     args = parser.parse_args()
@@ -104,19 +111,44 @@ def main():
         scrape_ts=scrape_ts
     )
 
-    # TODO: Implement option to check for new hearings
-
+    # NEW HEARINGS OPTION: Print out only the new hearings
     if args.new:
         try:
             prior_scrape = hearings.load_hearings(LOCAL_SCRAPE_DATA)
             new = scrape.detect_new(prior_scrape)
             new_count = str(len(new))
+
             print(f"found {new_count} new hearings")
             print(new)
+            print("overwriting last scrape file with latest data")
+
+            scrape.store_scrape(LOCAL_SCRAPE_DATA)
 
         except FileNotFoundError:
-            print("cannot id new hearings because file for prior scrape "
-                  "could not be found ... storing and exiting")
+            print("cannot id new hearings ... file for prior scrape not found")
+            print("storing latest scrape data and exiting ...")
+
+            scrape.store_scrape(LOCAL_SCRAPE_DATA)
+
+    # CANCELLED HEARINGS OPTION: Print out only the cancelled hearings
+    elif args.cancelled:
+        try:
+            prior_scrape = hearings.load_hearings(LOCAL_SCRAPE_DATA)
+
+            # TODO Update STATUS value to CANCELLED
+            cancelled = scrape.detect_cancelled(prior_scrape)
+            cancelled_count = str(len(cancelled))
+
+            print(f"found {cancelled_count} cancelled hearings")
+            print(cancelled)
+            print("overwriting last scrape file with latest data")
+
+            scrape.store_scrape(LOCAL_SCRAPE_DATA)
+
+        except FileNotFoundError:
+            print("cannot id cancelled hearings ... "
+                  "file for prior scrape not found")
+            print("storing latest scrape data and exiting ...")
 
             scrape.store_scrape(LOCAL_SCRAPE_DATA)
 
