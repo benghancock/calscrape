@@ -8,6 +8,7 @@ import argparse
 import configparser
 from datetime import datetime
 from dateutil import tz
+import logging
 
 import calendar_parser
 import hearings
@@ -37,6 +38,14 @@ def parse_args():
         help='test mode'
     )
 
+    parser.add_argument(
+        "--verbose",
+        required=False,
+        action="store_true",
+        default=False,
+        help="verbose logging to the console"
+    )
+
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument(
         "--new",
@@ -53,10 +62,16 @@ def parse_args():
     )
 
     mode.add_argument(
-        "--all",
+        "--showall",
         action="store_true",
         default=False,
         help="print all scraped hearings to stdout"
+    )
+
+    mode.add_argument(
+        "--find",
+        type=str,
+        help="find hearings with a search term in the case caption"
     )
 
     args = parser.parse_args()
@@ -85,20 +100,44 @@ def select_court(court_string, config):
         return None
 
 
-def hearings_readable(hearings_data):
+def hearings_readable(hearing_data):
     """Print hearings to the console in a human-readable way"""
     print("--- BEGIN HEARINGS ---")
-    for hearing in hearings_data:
+    for hearing in hearing_data:
         for key, value in hearing.items():
             print(f"{key}: {value}")
 
         print("---------------")
 
+    print("NO MORE HEARINGS")
+
     return None
+
+
+def find_by_caption(hearing_data, search_string):
+    """Find hearings by string in the case caption"""
+    matches = []
+
+    for hearing in hearing_data:
+        case_cap = hearing.get('case_cap')
+
+        if search_string.lower() in case_cap.lower():
+            matches.append(hearing)
+
+        else:
+            continue
+
+    return matches
 
 
 def main():
     args = parse_args()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.INFO)
+
+    else:
+        logging.basicConfig(level=logging.ERROR)
 
     # TODO Handle FileNotFoundError for config file
     config = load_courts_config(COURTS_CONFIG)
@@ -159,14 +198,16 @@ def main():
             print("cannot id cancelled hearings ... "
                   "file for prior scrape not found")
 
-    elif args.all:
+    elif args.find:
+        matches = find_by_caption(scrape.hearing_data, args.find)
+        hearings_readable(matches)
+
+    elif args.showall:
         hearings_readable(scrape.hearing_data)
 
     # DEFAULT BEHAVIOR: Overwrite the prior scrape data
-    print("storing latest scrape data and exiting ...")
+    logging.info("storing latest scrape data and exiting ...")
     scrape.store_scrape(LOCAL_SCRAPE_DATA)
-
-    print("done")
 
 
 if __name__ == '__main__':
