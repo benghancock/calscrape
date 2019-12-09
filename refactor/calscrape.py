@@ -52,6 +52,13 @@ def parse_args():
         help="print hearings cancelled since last scrape"
     )
 
+    mode.add_argument(
+        "--all",
+        action="store_true",
+        default=False,
+        help="print all scraped hearings to stdout"
+    )
+
     args = parser.parse_args()
 
     return args
@@ -76,6 +83,18 @@ def select_court(court_string, config):
 
     else:
         return None
+
+
+def hearings_readable(hearings_data):
+    """Print hearings to the console in a human-readable way"""
+    print("--- BEGIN HEARINGS ---")
+    for hearing in hearings_data:
+        for key, value in hearing.items():
+            print(f"{key}: {value}")
+
+        print("---------------")
+
+    return None
 
 
 def main():
@@ -120,15 +139,9 @@ def main():
 
             print(f"found {new_count} new hearings")
             print(new)
-            print("overwriting last scrape file with latest data")
-
-            scrape.store_scrape(LOCAL_SCRAPE_DATA)
 
         except FileNotFoundError:
             print("cannot id new hearings ... file for prior scrape not found")
-            print("storing latest scrape data and exiting ...")
-
-            scrape.store_scrape(LOCAL_SCRAPE_DATA)
 
     # CANCELLED HEARINGS OPTION: Print out only the cancelled hearings
     elif args.cancelled:
@@ -141,20 +154,17 @@ def main():
 
             print(f"found {cancelled_count} cancelled hearings")
             print(cancelled)
-            print("overwriting last scrape file with latest data")
-
-            scrape.store_scrape(LOCAL_SCRAPE_DATA)
 
         except FileNotFoundError:
             print("cannot id cancelled hearings ... "
                   "file for prior scrape not found")
-            print("storing latest scrape data and exiting ...")
 
-            scrape.store_scrape(LOCAL_SCRAPE_DATA)
+    elif args.all:
+        hearings_readable(scrape.hearing_data)
 
     # DEFAULT BEHAVIOR: Overwrite the prior scrape data
-    else:
-        scrape.store_scrape(LOCAL_SCRAPE_DATA)
+    print("storing latest scrape data and exiting ...")
+    scrape.store_scrape(LOCAL_SCRAPE_DATA)
 
     print("done")
 
