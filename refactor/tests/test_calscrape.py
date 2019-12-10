@@ -99,6 +99,17 @@ cancelled_hearing = [
     }
 ]
 
+# An example of a hearing found in a search
+found_hearing = [
+    {
+        "judge": "Judge Judy",
+        "case_cap": "Alien v. Predator",
+        "detail": "Motion for Facehugger Removal",
+        "date": datetime(2020, 1, 1, 16, tzinfo=test_timezone)
+    }
+]
+
+
 ################################
 # Test Fixtures
 ################################
@@ -111,6 +122,15 @@ class TestCalscrape(unittest.TestCase):
         test_court = "CAND"
         parser = calscrape.select_court(test_court, config)
         self.assertIsInstance(parser, calendar_parser.CANDParser)
+
+    def test_find_by_caption(self):
+        search_string = "alien"
+        matches = calscrape.find_by_caption(
+            sample_hearings_a.hearing_data,
+            search_string
+        )
+
+        self.assertTrue(matches[0] == found_hearing[0])
 
 
 class TestCalendarparser(unittest.TestCase):

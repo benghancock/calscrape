@@ -11,8 +11,6 @@ import requests
 from bs4 import BeautifulSoup
 from dateutil import tz
 
-logging.basicConfig(filename='parser.log', level=logging.DEBUG)
-
 
 def parser_log(func):
     def log_wrapper(*args, **kwargs):
@@ -95,6 +93,7 @@ class CANDParser(CalendarParser):
         calendars = {}
 
         for judge, url in calendar_urls.items():
+            logging.info(f'scraping calendar for {judge}')
             r = requests.get(url)
             calendars[judge] = r
 
@@ -109,9 +108,8 @@ class CANDParser(CalendarParser):
 
     def parse_calendar(self, calendar):
         """Parse all hearing information on a given CAND judge's calendar"""
-
+        logging.info('parsing calendar')
         hearing_data = []
-
         calendar_soup = BeautifulSoup(calendar, 'lxml')
 
         # Get the judge's name from string
@@ -124,7 +122,10 @@ class CANDParser(CalendarParser):
                 page_top
             ).group(1)
 
+            logging.info(f'calendar is for {judge_name}')
+
         except AttributeError:
+            logging.exception('could not determine judge name for calendar')
             return hearing_data
 
         # Calendar is organized as a table, get table rows ('tr')
@@ -179,5 +180,8 @@ class CANDParser(CalendarParser):
 
         except AttributeError:
             pass
+
+        hearing_count = str(len(hearing_data))
+        logging.info(f'scraped {hearing_count} hearings')
 
         return hearing_data

@@ -7,6 +7,7 @@ import modules.calendar_parser as calparse
 
 CONFIG_FILE = 'calendars_conf.ini'
 
+
 def select_court(court_code):
     """Returns CalendarParser object"""
 

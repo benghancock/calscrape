@@ -41,8 +41,8 @@ def get_args():
                       help='run silently and save results to logfile')
     mode.add_argument('-k', '--keyword',
                       help='print results matching keyword')
-
-    # parser.set_defaults(full=True)
+    mode.add_argument('--test', action='store_true',
+                      help='scrape only one calendar as a test')
 
     args = parser.parse_args()
     return args
@@ -118,7 +118,9 @@ def main():
         full_mode = args.full
         keyword = args.keyword
         silent_mode = args.silent       # TODO implement silent logging
+        testing = args.test
 
+        
         if court not in SUPPORTED_COURTS:
             print(f"{court} is not a supported court")
             break
@@ -127,6 +129,9 @@ def main():
             court_parser = select_court(court)
 
             print("scraping court website ... hang tight")
+            court_index = court_parser.grab_calendars_listing()
+            
+            
             hearing_data = court_parser.scrape_calendars()
 
             if full_mode:

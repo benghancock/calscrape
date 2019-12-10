@@ -69,7 +69,7 @@ class CANDParserTest(unittest.TestCase):
         for hearing in parsed_calendar:
             if hearing.get('case_no') == '3:19-cv-01454-WHA':
                 sample_hearings_case_no.append(hearing)
-                
+
             else:
                 continue
 

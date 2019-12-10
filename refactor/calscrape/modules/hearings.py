@@ -39,16 +39,6 @@ class Hearings():
         self.hearing_data = hearing_data
         self.scrape_ts = scrape_ts
 
-    # def detect_new(self, prior_scrape):
-    #     """A method for detecting new hearings"""
-    #     this_set = self.make_set(self.hearing_data)
-    #     prior_set = self.make_set(prior_scrape)
-
-    #     new = this_set.difference(prior_set)
-    #     new_reverted = self.revert_list(new)
-
-    #     return new_reverted
-
     def detect_new(self, prior_scrape):
         """Detect which hearings in the latest scrape are new
 

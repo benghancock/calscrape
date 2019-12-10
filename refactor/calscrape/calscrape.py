@@ -15,7 +15,7 @@ import hearings
 
 
 COURTS_CONFIG = "courts_config.ini"
-LOCAL_SCRAPE_DATA = "local_scrape_data.json"
+LOCAL_SCRAPE_DATA = "calscrape_latest_scrape.json"
 
 
 def parse_args():
