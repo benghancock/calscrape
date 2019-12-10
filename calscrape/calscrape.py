@@ -10,12 +10,12 @@ from datetime import datetime
 from dateutil import tz
 import logging
 
-import calendar_parser
-import hearings
+import modules.calendar_parser as calendar_parser
+import modules.hearings as hearings
 
 
 COURTS_CONFIG = "courts_config.ini"
-LOCAL_SCRAPE_DATA = "calscrape_latest_scrape.json"
+LOCAL_SCRAPE_DATA = "data/calscrape_latest_scrape.json"
 
 
 def parse_args():

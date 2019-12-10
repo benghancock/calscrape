@@ -5,11 +5,11 @@ Tests for calscrape.py and modules
 """
 
 from datetime import datetime, timezone, timedelta
+from dateutil import tz
 import unittest
 
 import calscrape
 import calendar_parser
-from dateutil import tz
 import hearings
 
 TEST_CAND_INDEX = 'test_data/test_cand_index.html'
