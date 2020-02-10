@@ -8,14 +8,12 @@ from datetime import datetime, timezone, timedelta
 from dateutil import tz
 import unittest
 
-import calscrape
-import calendar_parser
-import hearings
+from calscrape import calscrape, calendar_parser, hearings
 
-TEST_CAND_INDEX = 'test_data/test_cand_index.html'
-TEST_JUDGE_PAGE = 'test_data/test_judge_page.html'
-TEST_LOCAL_SCRAPE_FILE = 'test_data/test.json'
-COURTS_CONFIG = "courts_config.ini"
+TEST_CAND_INDEX = 'tests/test_data/test_cand_index.html'
+TEST_JUDGE_PAGE = 'tests/test_data/test_judge_page.html'
+TEST_LOCAL_SCRAPE_FILE = 'tests/test_data/test.json'
+COURTS_CONFIG = "calscrape/courts_config.ini"
 
 ################################
 # Sample data to use for testing
