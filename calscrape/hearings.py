@@ -42,7 +42,7 @@ class Hearings():
     def detect_new(self, prior_scrape):
         """Detect which hearings in the latest scrape are new
 
-        1. Check each hearing in the latest scrape
+         1. Check each hearing in the latest scrape
         2. Is it the same as any of the hearings in the prior scrape?
         3. If no, then it's new
         """

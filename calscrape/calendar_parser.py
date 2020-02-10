@@ -27,7 +27,7 @@ def parser_log(func):
     return log_wrapper
 
 
-class CalendarParser():
+class CalendarParser:
     """A court calendar parser object"""
 
     def __init__(self, base_url, calendar_index):

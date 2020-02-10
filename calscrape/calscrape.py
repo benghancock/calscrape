@@ -10,8 +10,8 @@ from datetime import datetime
 from dateutil import tz
 import logging
 
-import modules.calendar_parser as calendar_parser
-import modules.hearings as hearings
+from .calendar_parser import CANDParser
+from .hearings import load_hearings, Hearings
 
 
 COURTS_CONFIG = "courts_config.ini"
@@ -92,8 +92,8 @@ def select_court(court_string, config):
 
     # California Northern District
     if court_string.lower() == 'cand':
-        parser = calendar_parser.CANDParser(config['CAND']['CAND_BASEURL'],
-                                            config['CAND']['CAND_INDEX'])
+        parser = CANDParser(config['CAND']['CAND_BASEURL'],
+                            config['CAND']['CAND_INDEX'])
         return parser
 
     else:
@@ -164,7 +164,7 @@ def main():
         parsed_calendar = scraper.parse_calendar(calendar.text)
         parsed_calendars.extend(parsed_calendar)
 
-    scrape = hearings.Hearings(
+    scrape = Hearings(
         hearing_data=parsed_calendars,
         scrape_ts=scrape_ts
     )
@@ -172,7 +172,7 @@ def main():
     # NEW HEARINGS OPTION: Print out only the new hearings
     if args.new:
         try:
-            prior_scrape = hearings.load_hearings(LOCAL_SCRAPE_DATA)
+            prior_scrape = load_hearings(LOCAL_SCRAPE_DATA)
             new = scrape.detect_new(prior_scrape)
             new_count = str(len(new))
 
@@ -185,7 +185,7 @@ def main():
     # CANCELLED HEARINGS OPTION: Print out only the cancelled hearings
     elif args.cancelled:
         try:
-            prior_scrape = hearings.load_hearings(LOCAL_SCRAPE_DATA)
+            prior_scrape = load_hearings(LOCAL_SCRAPE_DATA)
 
             # TODO Update STATUS value to CANCELLED
             cancelled = scrape.detect_cancelled(prior_scrape)
