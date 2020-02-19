@@ -42,7 +42,7 @@ class CalendarParser:
         self.date_format = '%A, %b %d %Y'
 
         # Regex patterns to detect times and dates on calendars
-        self.cal_datepat = r'\b\w.+\d+.201\d\b'
+        self.cal_datepat = r'\b\w.+\d+.20\d\d\b'
         self.cal_timepat = r'\d+:\d+\w+(AM|PM)'
         self.cal_hearingpat = r'^(\d:\d\d-[a-zA-Z]+-\d+-[a-zA-Z]+)\s-\s(.*)$'
 
