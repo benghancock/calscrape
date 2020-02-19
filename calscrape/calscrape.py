@@ -9,13 +9,14 @@ import configparser
 from datetime import datetime
 from dateutil import tz
 import logging
+import pkg_resources
 
 from .calendar_parser import CANDParser
 from .hearings import load_hearings, Hearings
 
 
-COURTS_CONFIG = "courts_config.ini"
-LOCAL_SCRAPE_DATA = "data/calscrape_latest_scrape.json"
+COURTS_CONFIG_FILE = "courts_config.ini"
+LOCAL_SCRAPE_DATA = "calscrape_latest_scrape.json"
 
 
 def parse_args():
@@ -131,6 +132,11 @@ def find_by_caption(hearing_data, search_string):
 
 
 def main():
+    # Resolve the path the .ini file
+    courts_config_path = pkg_resources.resource_filename(
+        __name__, COURTS_CONFIG_FILE
+    )
+
     args = parse_args()
 
     if args.verbose:
@@ -140,7 +146,7 @@ def main():
         logging.basicConfig(level=logging.ERROR)
 
     # TODO Handle FileNotFoundError for config file
-    config = load_courts_config(COURTS_CONFIG)
+    config = load_courts_config(courts_config_path)
     court = args.court.lower()
     testing = args.test
 
