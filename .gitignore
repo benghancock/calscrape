@@ -4,6 +4,7 @@ lib64
 pyvenv.cfg
 share/
 __pycache__/
+venv/
 *.swp
 *~
 *#
