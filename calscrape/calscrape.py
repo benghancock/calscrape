@@ -16,7 +16,7 @@ from pathlib import Path
 from .calendar_parser import CANDParser
 from .hearings import load_hearings, Hearings
 
-
+SUPPORTED_COURTS = ['CAND']
 COURTS_CONFIG_FILE = "courts_config.ini"
 LOCAL_SCRAPE_DATA = "calscrape_latest_scrape.json"
 
@@ -34,6 +34,7 @@ def parse_args():
     parser.add_argument(
         '--court',
         required=True,
+        choices=SUPPORTED_COURTS,
         help='short code for the desired court'
     )
 
