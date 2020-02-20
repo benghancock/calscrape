@@ -9,7 +9,9 @@ import configparser
 from datetime import datetime
 from dateutil import tz
 import logging
+import os
 import pkg_resources
+from pathlib import Path
 
 from .calendar_parser import CANDParser
 from .hearings import load_hearings, Hearings
@@ -17,6 +19,10 @@ from .hearings import load_hearings, Hearings
 
 COURTS_CONFIG_FILE = "courts_config.ini"
 LOCAL_SCRAPE_DATA = "calscrape_latest_scrape.json"
+
+latest_scrape_path = os.path.join(
+    Path.home(), LOCAL_SCRAPE_DATA
+)
 
 
 def parse_args():
@@ -178,7 +184,7 @@ def main():
     # NEW HEARINGS OPTION: Print out only the new hearings
     if args.new:
         try:
-            prior_scrape = load_hearings(LOCAL_SCRAPE_DATA)
+            prior_scrape = load_hearings(latest_scrape_path)
             new = scrape.detect_new(prior_scrape)
             new_count = str(len(new))
 
@@ -191,7 +197,7 @@ def main():
     # CANCELLED HEARINGS OPTION: Print out only the cancelled hearings
     elif args.cancelled:
         try:
-            prior_scrape = load_hearings(LOCAL_SCRAPE_DATA)
+            prior_scrape = load_hearings(latest_scrape_path)
 
             # TODO Update STATUS value to CANCELLED
             cancelled = scrape.detect_cancelled(prior_scrape)
@@ -213,7 +219,7 @@ def main():
 
     # DEFAULT BEHAVIOR: Overwrite the prior scrape data
     logging.info("storing latest scrape data and exiting ...")
-    scrape.store_scrape(LOCAL_SCRAPE_DATA)
+    scrape.store_scrape(latest_scrape_path)
 
 
 if __name__ == '__main__':
