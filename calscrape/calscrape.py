@@ -166,8 +166,8 @@ def main():
     calendar_urls = scraper.scrape_index(index)
 
     # Conduct the scrape; TS is local time for the court
-    # FIXME Replace hard-coded timezone value
-    court_tz = tz.gettz(config['CAND']['TIMEZONE'])
+    court_config_code = court.upper()
+    court_tz = tz.gettz(config[court_config_code]['TIMEZONE'])
     scrape_ts = datetime.now(court_tz)
     calendars = scraper.scrape_calendars(calendar_urls, testing)
 
