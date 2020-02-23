@@ -20,6 +20,7 @@ SUPPORTED_COURTS = ['CAND']
 COURTS_CONFIG_FILE = "courts_config.ini"
 LOCAL_SCRAPE_DATA = "calscrape_latest_scrape.json"
 
+# Store latest scrape data
 latest_scrape_path = os.path.join(
     Path.home(), LOCAL_SCRAPE_DATA
 )
