@@ -183,6 +183,8 @@ class TestHearings(unittest.TestCase):
     def test_detect_cancelled(self):
         """A method for detecting cancelled hearings"""
         cancelled = sample_hearings_b.detect_cancelled(sample_hearings_a)
+        self.assertTrue(cancelled[0].get("status") == "CANCELLED")
+        cancelled[0].pop("status")
         self.assertTrue(cancelled[0] == cancelled_hearing[0])
 
     def test_store_scrape(self):
