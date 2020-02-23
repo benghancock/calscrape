@@ -200,8 +200,6 @@ def main():
     elif args.cancelled:
         try:
             prior_scrape = load_hearings(latest_scrape_path)
-
-            # TODO Update STATUS value to CANCELLED
             cancelled = scrape.detect_cancelled(prior_scrape)
             cancelled_count = str(len(cancelled))
 

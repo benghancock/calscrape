@@ -78,6 +78,7 @@ class Hearings():
                 hearing_dt = prior_hearing.get('date')
 
                 if hearing_dt > self.scrape_ts:
+                    prior_hearing.update({'status': "CANCELLED"})
                     cancelled_hearings.append(prior_hearing)
 
                 else:
