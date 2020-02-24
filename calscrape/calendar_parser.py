@@ -136,7 +136,7 @@ class CANDParser(CalendarParser):
             # Only get nonempty cells in the table
             table_data = table.find_all(text=True)
 
-            for cell in table_data:
+            for i, cell in enumerate(table_data):
                 court_date = re.search(self.cal_datepat, cell)
                 court_time = re.search(self.cal_timepat, cell)
                 hearing = re.search(self.cal_hearingpat, cell)
@@ -164,7 +164,7 @@ class CANDParser(CalendarParser):
                                                   tzinfo=self.court_tz)
 
                     # Details of hearing are at next index location in list
-                    hearing_detail = table_data[table_data.index(cell) + 1]
+                    hearing_detail = table_data[i + 1]
 
                     data = {'judge': judge_name,
                             'date': date_stamp,
