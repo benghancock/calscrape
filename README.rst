@@ -1,6 +1,26 @@
-=========
-CalScrape
-=========
+================================================
+CalScrape: Scrape & Search Judicial Hearing Data
+================================================
+
+
+**CalScrape** is a free and open-source command line tool written in Python
+that allows users to rapidly find data about hearings in certain courts. In
+other words, it is a judicial *cal* -endar *scrape* -er.
+
+
+Why?
+====
+
+Data about judicial proceedings can be tricky to find and a pain to search
+through. Records in the supposedly public PACER system cost an exorbitant
+amount of money, and other solutions focus on providing full court dockets or
+judicial opinions. Court websites, meanwhile, tend to spread the information
+out over multiple pages or store it in a not-so-user-friendly format.
+
+In short, there hasn't been an easy way for journalists or other interested
+members of the public to find information about *upcoming* hearings that they
+may want to attend. And that's important: open information about public
+hearings helps ensure the proper functioning of the justice system.
 
 .. epigraph::
 
@@ -10,19 +30,37 @@ CalScrape
     established procedures are being followed and that deviations will become
     known."
 
-    -- `Press-Enterprise Co. v. Superior Court (1986)
-    <https://www.law.cornell.edu/supremecourt/text/478/1>`__
+    -- `Press-Enterprise Co. v. Superior Court (1986)`_
 
-**CalScrape** is a tool for rapidly searching judicial calendars for court
-hearings of interest. It is primarily geared toward journalists but also aims
-to be useful to researchers and interested members of the public. It provides
-an alternative (and free) way to look for hearings in cases aside from PACER.
+.. _Press-Enterprise Co. v. Superior Court (1986): https://www.law.cornell.edu/supremecourt/text/478/1
 
-As of writing, CalScrape only supports the U.S. District Court for the Northern
-District of California (CAND). Ultimately, the goal of this project is to
-extend data availability to other federal and state courts throughout the
-United States. A lot of work is being done to make the code modular so that
-bolting on support for further courts can be as seamless as possible.
+
+Quickstart
+==========
+
+CalScrape is not yet available via PyPI. The easiest way to install it is to
+clone the GitHub repo and use ``pip`` to resolve the dependencies. Assuming
+you're on a Linux or other *nix-like system, open a terminal and enter:
+
+.. code:: bash
+
+   $ git clone https://github.com/elwha1/calscrape.git
+
+
+Once you've done that, ``cd`` into the repo directory and install like so:
+
+.. code:: bash
+
+   $ pip install --user .
+
+
+You will see ``pip`` fetch and install any necessary packages. Now, you should
+be able to enter the following command to start using CalScrape:
+
+.. code:: bash
+
+   $ calscrape --help       
+
 
 Installation
 ============
