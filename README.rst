@@ -62,8 +62,55 @@ be able to enter the following command to start using CalScrape:
    $ calscrape --help       
 
 
+The same general process should also work on Windows (I just haven't tested it,
+yet). Note that ``calscrape`` requires Python 3.6 or higher. If your system
+ships with Python 2 as the default, you may need to change the ``pip`` command
+to ``pip3`` after installing the latest version of Python.
+
+
+Usage
+=====
+
+CalScrape currently has one big limitation: it currently only provides data
+from the District Court for the North District of California in San
+Francisco. That said, work has been done to keep the codebase modular enough to
+easily bolt on parsers for additional courts. This being an open-source
+project, feel free to suggest courts that you think should be added!
+
+When you run ``calscrape`` on the command line, your machine interacts with the
+court's website. In general, it runs very fast. However, in order not to cause
+any unintentional bottleneck in web traffic, the scraper is configured to wait
+a bit before making each request.
+
+CalScrape has several "modes" that can be invoked by passing different
+arguments on the command line. These are ``--new``, ``--cancelled``,
+``--showall``, and ``--find``. These are *mostly* self-explanatory, but the
+behavior of the first two options bears some explanation.
+
+When you run ``calscrape`` for the first time on your computer, it has no data
+to compare against in order to determine which hearings are "new" or which have
+been "cancelled". After you run it, the program will store a simple JSON file
+in your home directory called ``calscrape_latest_scrape.json``. This file is
+updated on each run. Now, you can pass the arguments to detect new or cancelled
+hearings. You can think of the ``--new`` flag as showing hearings that are "new
+to you," as in, they haven't been seen by your machine before -- and likewise
+with the ``--cancelled`` flag.
+
+Note, both the ``--new`` and ``--cancelled`` flags will output a stream of JSON
+data about the hearings to ``stdout``. The default behavior when running
+``calscrape`` with only the ``--court`` argument is simply to update the
+``calscrape_latest_scrape.json`` file. The assumption is that if you want to
+search through these data files, or store the data, you will use other tools.
+
+By contrast, using the ``--find`` or ``--showall`` flags will show hearings in
+a human-readable format. ``--find`` takes a single word or a phrase enclosed in
+quotes as a search term to look through hearing captions; ``--showall`` does
+just what you might think it would do -- show *all* the hearings on the calendar.
+
+
 Installation
 ============
+
 CalScrape requires Python 3.6 or greater and has several package dependencies.
 The instructions below cover CalScrape installation on most macOS and Linux
 systems; Windows instructions are forthcoming. CalScrape is run from the
