@@ -13,6 +13,7 @@ import os
 import pkg_resources
 from pathlib import Path
 
+from .version import __version__
 from .calendar_parser import CANDParser
 from .hearings import load_hearings, Hearings
 
@@ -29,6 +30,7 @@ latest_scrape_path = os.path.join(
 def parse_args():
     """Parse command-line arguments"""
     parser = argparse.ArgumentParser(
+        prog='calscrape',
         description='scrape and search court hearing calendars'
     )
 
@@ -53,6 +55,12 @@ def parse_args():
         action="store_true",
         default=False,
         help="verbose logging to the console"
+    )
+
+    parser.add_argument(
+        '--version',
+        action='version',
+        version='%(prog)s ' + __version__
     )
 
     mode = parser.add_mutually_exclusive_group()

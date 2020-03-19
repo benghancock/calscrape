@@ -1,18 +1,24 @@
 import setuptools
 
+version = {}
+with open("calscrape/version.py") as f:
+    exec(f.read(), version)
+
 with open("README.rst", "r") as readme:
     long_description = readme.read()
 
 setuptools.setup(
-    name="calscrape-elwha1",
-    version="2.0.1-dev",
+    name="calscrape",
+    version=version["__version__"],
     author="Ben Hancock",
     author_email="bghancock@vivaldi.net",
-    description="scrape and search federal court hearing data",
+    description="Scrape and search federal court hearing data",
     long_description=long_description,
     long_description_content_type="text/x-rst",
     url="https://github.com/elwha1/calscrape",
-    packages=setuptools.find_packages(),
+    packages=["calscrape"],
+    package_dir={"calscrape": "calscrape"},
+    package_data={"calscrape": ["*.ini"]},
     entry_points={
         "console_scripts": ["calscrape=calscrape.calscrape:main"]
     },
