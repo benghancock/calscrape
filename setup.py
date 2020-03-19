@@ -28,7 +28,7 @@ setuptools.setup(
         "Operating System :: POSIX"
     ],
     install_requires=[
-        "bs4>=4.8.2",
+        "beautifulsoup4>=4.8.2",
         "lxml>=4.5.0",
         "python-dateutil>=2.8.1",
         "requests"
