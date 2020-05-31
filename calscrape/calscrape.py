@@ -20,6 +20,7 @@ from .hearings import load_hearings, Hearings
 SUPPORTED_COURTS = ['CAND']
 COURTS_CONFIG_FILE = "courts_config.ini"
 LOCAL_SCRAPE_DATA = "calscrape_latest_scrape.json"
+OUTPUT_OPTIONS = ["csv", "ical", "json", "plain"]
 
 # Store latest scrape data
 latest_scrape_path = os.path.join(
@@ -89,6 +90,13 @@ def parse_args():
         "--find",
         type=str,
         help="find hearings with a search term in the case caption"
+    )
+
+    parser.add_argument(
+        "--output",
+        choices=OUTPUT_OPTIONS,
+        required=False,
+        default="json"
     )
 
     args = parser.parse_args()
