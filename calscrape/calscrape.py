@@ -16,6 +16,8 @@ from pathlib import Path
 from .version import __version__
 from .calendar_parser import CANDParser
 from .hearings import load_hearings, Hearings
+from .scrape_outputter import output_csv
+
 
 SUPPORTED_COURTS = ['CAND']
 COURTS_CONFIG_FILE = "courts_config.ini"
@@ -173,6 +175,7 @@ def main():
     config = load_courts_config(courts_config_path)
     court = args.court.lower()
     testing = args.test
+    output_format = args.output
 
     # Initialize the scraper
     scraper = select_court(court, config)
@@ -232,6 +235,9 @@ def main():
 
     elif args.showall:
         hearings_readable(scrape.hearing_data)
+
+    elif output_format == "csv":
+        output_csv(scrape.hearing_data)
 
     # DEFAULT BEHAVIOR: Overwrite the prior scrape data
     logging.info("storing latest scrape data and exiting ...")

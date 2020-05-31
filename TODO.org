@@ -1,0 +1,22 @@
+#+TITLE: CalScrape Project TODOs
+#+SEQ_TODO: PROJECT NEXT TODO STARTED BUG QUESTION | DONE RESOLVED
+
+* TODO Implement CSV Output
+
+** DONE Add an ~--output~ argument
+   CLOSED: [2020-05-31 Sun 15:30]
+
+** DONE Add a ~output_csv()~ function
+   CLOSED: [2020-05-31 Sun 15:48]
+   Should this be part of a module?
+
+*** RESOLVED How should CSV be printed to ~stdout~?
+    CLOSED: [2020-05-31 Sun 15:42]
+    
+    - Going to try this: [[https://stackoverflow.com/questions/23665264/use-python-to-write-csv-output-to-stdout][StackOverflow]]
+
+*** STARTED Integrate ~output_csv~
+    - [X] Test writing output
+    - [ ] Make output an option regardless of mode
+
+* BUG Investigate why not all hearings are printing
